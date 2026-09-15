@@ -52,6 +52,7 @@ body::before {
   height: 100%;
   display: block;
   outline: none;
+  touch-action: none;
 }
 
 .topbar {
@@ -188,9 +189,15 @@ h1 {
 }
 
 .project-panel.is-active {
+  pointer-events: auto;
+  cursor: pointer;
   border-color: rgba(167, 139, 250, 0.46);
   transform: translateY(-4px);
   background: linear-gradient(145deg, rgba(76, 29, 149, 0.22), rgba(8, 12, 19, 0.9));
+}
+
+.project-panel.is-active:hover {
+  border-color: rgba(196, 181, 253, 0.72);
 }
 
 .project-panel h2 {
