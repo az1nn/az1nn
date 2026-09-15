@@ -48,7 +48,6 @@ blueLight.position.set(-5, -2, 2);
 scene.add(blueLight);
 
 const constellation = new THREE.Group();
-constellation.position.x = window.innerWidth > 900 ? 2.1 : 0;
 scene.add(constellation);
 
 function createStarField(count = 850) {
@@ -142,6 +141,7 @@ const projects = [
     url: "https://github.com/az1nn/openband",
     position: [-3.45, 1.7, -0.35],
     scale: 0.42,
+    kind: "project",
   },
   {
     name: "CPXLABS Admin",
@@ -149,6 +149,7 @@ const projects = [
     url: "https://github.com/az1nn/cpxlabs-admin",
     position: [3.3, 1.85, -0.7],
     scale: 0.48,
+    kind: "project",
   },
   {
     name: "PG Researcher",
@@ -156,6 +157,7 @@ const projects = [
     url: "https://github.com/az1nn/pg-researcher",
     position: [3.7, -1.75, 0.05],
     scale: 0.38,
+    kind: "project",
   },
   {
     name: "CPX Labs",
@@ -163,6 +165,7 @@ const projects = [
     url: "https://github.com/az1nn/cpx-labs",
     position: [-2.9, -1.85, 0.25],
     scale: 0.43,
+    kind: "project",
   },
   {
     name: "Archive / Systems",
@@ -170,8 +173,15 @@ const projects = [
     url: "https://github.com/az1nn?tab=repositories",
     position: [0.4, -3.2, -1.15],
     scale: 0.34,
+    kind: "project",
   },
 ];
+
+const aiTwin = {
+  name: "AI Twin",
+  short: "A digital extension of my engineering loop: research, architecture, documentation, automation and building.",
+  kind: "twin",
+};
 
 const nodeMeshes = [];
 const interactiveTargets = [];
@@ -181,13 +191,13 @@ const connectorMaterial = new THREE.LineBasicMaterial({
   opacity: 0.27,
 });
 
-function attachInteraction(object, project, group) {
-  object.userData.project = project;
+function attachInteraction(object, entity, group) {
+  object.userData.project = entity;
   object.userData.group = group;
   interactiveTargets.push(object);
 }
 
-function makeLabel(text) {
+function makeLabel(text, accent = "#c4b5fd") {
   const labelCanvas = document.createElement("canvas");
   const ctx = labelCanvas.getContext("2d");
   const ratio = 2;
@@ -199,13 +209,15 @@ function makeLabel(text) {
   const width = Math.min(520, ctx.measureText(text).width + 42);
   const left = (560 - width) / 2;
   ctx.fillStyle = "rgba(8, 12, 19, 0.78)";
-  ctx.strokeStyle = "rgba(167, 139, 250, 0.38)";
+  ctx.strokeStyle = accent;
+  ctx.globalAlpha = 0.5;
   ctx.lineWidth = 1.2;
   ctx.beginPath();
   ctx.roundRect(left, 18, width, 54, 27);
   ctx.fill();
   ctx.stroke();
-  ctx.fillStyle = "#e9e5ff";
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#eef2ff";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
   ctx.fillText(text, 280, 45);
@@ -220,6 +232,10 @@ function makeLabel(text) {
   sprite.scale.set(3.45, 0.58, 1);
   return sprite;
 }
+
+const coreLabel = makeLabel("AZ1NN", "#a78bfa");
+coreLabel.position.set(0, -1.85, 0);
+coreGroup.add(coreLabel);
 
 projects.forEach((project, index) => {
   const position = new THREE.Vector3(...project.position);
@@ -279,6 +295,113 @@ projects.forEach((project, index) => {
   nodeGroup.add(label);
 });
 
+const twinBasePosition = new THREE.Vector3(1.92, 0.35, 1.05);
+const twinGroup = new THREE.Group();
+twinGroup.position.copy(twinBasePosition);
+twinGroup.userData.basePosition = twinBasePosition.clone();
+twinGroup.userData.phase = 9.8;
+constellation.add(twinGroup);
+
+const twinCore = new THREE.Mesh(
+  new THREE.IcosahedronGeometry(0.76, 4),
+  new THREE.MeshPhysicalMaterial({
+    color: 0x38bdf8,
+    emissive: 0x075985,
+    emissiveIntensity: 1.15,
+    metalness: 0.58,
+    roughness: 0.12,
+    clearcoat: 1,
+    transparent: true,
+    opacity: 0.72,
+  }),
+);
+attachInteraction(twinCore, aiTwin, twinGroup);
+twinGroup.add(twinCore);
+nodeMeshes.push(twinCore);
+
+const twinWireframe = new THREE.Mesh(
+  new THREE.IcosahedronGeometry(0.9, 2),
+  new THREE.MeshBasicMaterial({
+    color: 0x7dd3fc,
+    wireframe: true,
+    transparent: true,
+    opacity: 0.72,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+twinGroup.add(twinWireframe);
+
+const twinAura = new THREE.Mesh(
+  new THREE.SphereGeometry(1.08, 32, 32),
+  new THREE.MeshBasicMaterial({
+    color: 0x38bdf8,
+    transparent: true,
+    opacity: 0.08,
+    side: THREE.BackSide,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+twinGroup.add(twinAura);
+
+const twinRingA = new THREE.Mesh(
+  new THREE.TorusGeometry(1.02, 0.012, 10, 120),
+  new THREE.MeshBasicMaterial({
+    color: 0x7dd3fc,
+    transparent: true,
+    opacity: 0.62,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+twinRingA.rotation.x = Math.PI / 2.25;
+twinGroup.add(twinRingA);
+
+const twinRingB = twinRingA.clone();
+twinRingB.scale.setScalar(1.14);
+twinRingB.rotation.set(Math.PI / 2, 0.55, 0.22);
+twinRingB.material = twinRingA.material.clone();
+twinRingB.material.opacity = 0.34;
+twinGroup.add(twinRingB);
+
+const twinHitTarget = new THREE.Mesh(
+  new THREE.SphereGeometry(1.18, 20, 20),
+  new THREE.MeshBasicMaterial({
+    transparent: true,
+    opacity: 0,
+    depthWrite: false,
+    colorWrite: false,
+  }),
+);
+attachInteraction(twinHitTarget, aiTwin, twinGroup);
+twinGroup.add(twinHitTarget);
+
+const twinLabel = makeLabel("AI TWIN", "#38bdf8");
+twinLabel.position.set(0, -1.42, 0);
+attachInteraction(twinLabel, aiTwin, twinGroup);
+twinGroup.add(twinLabel);
+
+const twinLight = new THREE.PointLight(0x38bdf8, 7, 7, 2);
+twinLight.position.set(0, 0, 0.7);
+twinGroup.add(twinLight);
+
+const twinLinkPositions = new Float32Array([
+  0, 0, 0,
+  twinBasePosition.x, twinBasePosition.y, twinBasePosition.z,
+]);
+const twinLinkGeometry = new THREE.BufferGeometry();
+twinLinkGeometry.setAttribute("position", new THREE.BufferAttribute(twinLinkPositions, 3));
+const twinLink = new THREE.Line(
+  twinLinkGeometry,
+  new THREE.LineBasicMaterial({
+    color: 0x38bdf8,
+    transparent: true,
+    opacity: 0.34,
+    blending: THREE.AdditiveBlending,
+  }),
+);
+constellation.add(twinLink);
+
+let twinActive = true;
+
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(99, 99);
 let hoveredProject = null;
@@ -291,16 +414,29 @@ function setPanel(project) {
 
   if (!project) {
     panel.classList.remove("is-active");
+    panel.setAttribute("tabindex", "-1");
     panel.innerHTML = `
-      <span class="panel-kicker">SELECT A NODE</span>
-      <h2>Project constellation</h2>
-      <p>Each orbital node represents an active or representative engineering system.</p>
-      <span class="panel-action">click a node to open its repository ↗</span>
+      <span class="panel-kicker">HUMAN + AI</span>
+      <h2>Engineering constellation</h2>
+      <p>Explore the projects around AZ1NN or select the holographic AI Twin.</p>
+      <span class="panel-action">select a node to inspect it ↗</span>
     `;
     return;
   }
 
   panel.classList.add("is-active");
+  panel.setAttribute("tabindex", "0");
+
+  if (project.kind === "twin") {
+    panel.innerHTML = `
+      <span class="panel-kicker">DIGITAL COUNTERPART</span>
+      <h2>AI Twin ${twinActive ? "· online" : "· idle"}</h2>
+      <p>${project.short}</p>
+      <span class="panel-action">${twinActive ? "click to quiet the twin" : "click to activate the twin"}</span>
+    `;
+    return;
+  }
+
   panel.innerHTML = `
     <span class="panel-kicker">PROJECT NODE</span>
     <h2>${project.name}</h2>
@@ -328,8 +464,16 @@ function pickAt(clientX, clientY) {
   };
 }
 
-function openProject(project, event) {
-  if (!project?.url) return;
+function activateEntity(project, event) {
+  if (!project) return;
+
+  if (project.kind === "twin") {
+    twinActive = !twinActive;
+    setPanel(project);
+    return;
+  }
+
+  if (!project.url) return;
 
   if (event?.metaKey || event?.ctrlKey || event?.shiftKey) {
     window.open(project.url, "_blank", "noopener,noreferrer");
@@ -349,7 +493,9 @@ function updateHover(clientX, clientY) {
   if (hoveredGroup) {
     hoveredGroup.scale.setScalar(1);
     const previousMesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
-    if (previousMesh) previousMesh.material.emissiveIntensity = 0.32;
+    if (previousMesh?.material?.emissiveIntensity !== undefined) {
+      previousMesh.material.emissiveIntensity = previousMesh === twinCore ? 1.15 : 0.32;
+    }
   }
 
   hoveredProject = nextProject;
@@ -358,7 +504,9 @@ function updateHover(clientX, clientY) {
   if (hoveredGroup && hoveredProject) {
     hoveredGroup.scale.setScalar(1.12);
     const currentMesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
-    if (currentMesh) currentMesh.material.emissiveIntensity = 0.95;
+    if (currentMesh?.material?.emissiveIntensity !== undefined) {
+      currentMesh.material.emissiveIntensity = currentMesh === twinCore ? 1.8 : 0.95;
+    }
     document.body.style.cursor = "pointer";
     setPanel(hoveredProject);
   } else {
@@ -391,7 +539,7 @@ window.addEventListener("pointerup", (event) => {
 
   const hit = pickAt(event.clientX, event.clientY);
   if (hit?.project) {
-    openProject(hit.project, event);
+    activateEntity(hit.project, event);
   }
 });
 
@@ -403,7 +551,9 @@ canvas.addEventListener("pointerleave", () => {
   if (hoveredGroup) {
     hoveredGroup.scale.setScalar(1);
     const mesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
-    if (mesh) mesh.material.emissiveIntensity = 0.32;
+    if (mesh?.material?.emissiveIntensity !== undefined) {
+      mesh.material.emissiveIntensity = mesh === twinCore ? 1.15 : 0.32;
+    }
   }
   hoveredProject = null;
   hoveredGroup = null;
@@ -412,13 +562,13 @@ canvas.addEventListener("pointerleave", () => {
 });
 
 panel.addEventListener("click", (event) => {
-  if (selectedProject) openProject(selectedProject, event);
+  if (selectedProject) activateEntity(selectedProject, event);
 });
 
 panel.addEventListener("keydown", (event) => {
   if (!selectedProject || (event.key !== "Enter" && event.key !== " ")) return;
   event.preventDefault();
-  openProject(selectedProject, event);
+  activateEntity(selectedProject, event);
 });
 
 const clock = new THREE.Clock();
@@ -437,14 +587,35 @@ function animate() {
 
     nodeMeshes.forEach((mesh) => {
       const group = mesh.userData.group;
-      const base = group.userData.basePosition;
-      const phase = group.userData.phase;
-      group.position.x = base.x + Math.cos(elapsed * 0.42 + phase) * 0.08;
-      group.position.y = base.y + Math.sin(elapsed * 0.58 + phase) * 0.1;
-      group.position.z = base.z + Math.sin(elapsed * 0.36 + phase) * 0.07;
-      mesh.rotation.y += 0.003;
+      const base = group?.userData?.basePosition;
+      const phase = group?.userData?.phase ?? 0;
+      if (!group || !base) return;
+
+      const amplitude = mesh === twinCore ? 0.055 : 0.08;
+      group.position.x = base.x + Math.cos(elapsed * 0.42 + phase) * amplitude;
+      group.position.y = base.y + Math.sin(elapsed * 0.58 + phase) * (amplitude + 0.02);
+      group.position.z = base.z + Math.sin(elapsed * 0.36 + phase) * amplitude;
+      mesh.rotation.y += mesh === twinCore ? 0.008 : 0.003;
     });
+
+    twinWireframe.rotation.x = -elapsed * 0.18;
+    twinWireframe.rotation.y = elapsed * 0.25;
+    twinRingA.rotation.z = elapsed * 0.18;
+    twinRingB.rotation.z = -elapsed * 0.12;
   }
+
+  const twinPulse = 0.5 + Math.sin(elapsed * 3.2) * 0.5;
+  twinAura.material.opacity = twinActive ? 0.08 + twinPulse * 0.08 : 0.025;
+  twinLink.material.opacity = twinActive ? 0.26 + twinPulse * 0.28 : 0.09;
+  twinLight.intensity = twinActive ? 6 + twinPulse * 5 : 1.6;
+  twinCore.material.opacity = twinActive ? 0.72 : 0.32;
+  twinWireframe.material.opacity = twinActive ? 0.72 : 0.22;
+
+  const linkPositions = twinLinkGeometry.attributes.position.array;
+  linkPositions[3] = twinGroup.position.x;
+  linkPositions[4] = twinGroup.position.y;
+  linkPositions[5] = twinGroup.position.z;
+  twinLinkGeometry.attributes.position.needsUpdate = true;
 
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
@@ -460,11 +631,11 @@ function applyResponsiveLayout() {
     camera.position.z = Math.max(camera.position.z, 9.2);
   } else if (width > 620) {
     constellation.position.set(0.6, -0.65, 0);
-    constellation.scale.setScalar(1);
+    constellation.scale.setScalar(0.94);
     controls.target.set(0.3, -0.55, 0);
   } else {
     constellation.position.set(0, -1.25, 0);
-    constellation.scale.setScalar(0.78);
+    constellation.scale.setScalar(0.72);
     controls.target.set(0, -1.2, 0);
   }
 }
@@ -479,4 +650,5 @@ function onResize() {
 
 window.addEventListener("resize", onResize, { passive: true });
 applyResponsiveLayout();
+setPanel(null);
 animate();
