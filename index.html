@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070a10" />
+    <meta name="description" content="Az1nn — an interactive Three.js engineering constellation by Alan." />
+    <title>Az1nn · Engineering Constellation</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <canvas id="scene" aria-label="Interactive 3D engineering constellation"></canvas>
+
+    <header class="topbar">
+      <a class="brand" href="https://github.com/az1nn" aria-label="Open Az1nn on GitHub">
+        <span class="brand-mark">A</span>
+        <span>AZ1NN</span>
+      </a>
+      <a class="quiet-link" href="https://github.com/az1nn/az1nn">source ↗</a>
+    </header>
+
+    <main class="shell">
+      <section class="intro" aria-labelledby="title">
+        <p class="eyebrow">FULL STACK · AI · PRODUCT ENGINEERING</p>
+        <h1 id="title">Engineering as a living system.</h1>
+        <p class="lede">
+          Explore a small 3D map of the projects and engineering themes around <strong>az1nn</strong>.
+          Orbit the scene, inspect a node and open the repository behind it.
+        </p>
+        <div class="chips" aria-label="Current engineering focus">
+          <span>React / Vite</span>
+          <span>Python / FastAPI</span>
+          <span>LLM / RAG</span>
+          <span>Spec-Driven</span>
+          <span>Graph Engineering</span>
+        </div>
+      </section>
+
+      <aside id="project-panel" class="project-panel" aria-live="polite">
+        <span class="panel-kicker">SELECT A NODE</span>
+        <h2>Project constellation</h2>
+        <p>Each orbital node represents an active or representative engineering system.</p>
+        <span class="panel-action">click a node to open its repository ↗</span>
+      </aside>
+    </main>
+
+    <footer class="hint">
+      <span>drag to orbit</span>
+      <i></i>
+      <span>scroll / pinch to zoom</span>
+      <i></i>
+      <span>hover to inspect</span>
+    </footer>
+
+    <noscript>This experience requires JavaScript and WebGL.</noscript>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
