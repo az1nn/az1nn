@@ -1,0 +1,102 @@
+name: Preview profile
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - index.html
+      - styles.css
+      - app.js
+      - README.md
+      - assets/**
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: profile-pages
+  cancel-in-progress: false
+
+jobs:
+  preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout production
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          path: production
+
+      - name: Checkout candidate
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: candidate
+
+      - name: Stage production and preview
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+          cp production/index.html production/styles.css production/app.js dist/
+          if [ -d production/assets ]; then
+            cp -R production/assets dist/assets
+          fi
+          touch dist/.nojekyll
+
+          preview_dir="dist/previews/pr-${{ github.event.number }}"
+          mkdir -p "$preview_dir"
+          cp candidate/index.html candidate/styles.css candidate/app.js "$preview_dir/"
+          if [ -d candidate/assets ]; then
+            cp -R candidate/assets "$preview_dir/assets"
+          fi
+
+          cat > "$preview_dir/preview.json" <<EOF
+          {
+            "environment": "preview",
+            "pull_request": ${{ github.event.number }},
+            "sha": "${{ github.event.pull_request.head.sha }}"
+          }
+          EOF
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload preview site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+      - name: Deploy preview
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Publish preview link on PR
+        uses: actions/github-script@v7
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          PR_NUMBER: ${{ github.event.number }}
+        with:
+          script: |
+            const marker = '<!-- az1nn-profile-preview -->';
+            const previewUrl = `${process.env.PAGE_URL}previews/pr-${process.env.PR_NUMBER}/`;
+            const body = `${marker}\n### Profile preview\n\n✅ Preview deployed: ${previewUrl}\n\nThis keeps the production root intact and serves this PR under an isolated path.`;
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((comment) => comment.body?.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
