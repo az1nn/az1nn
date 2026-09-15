@@ -54,7 +54,6 @@ scene.add(constellation);
 function createStarField(count = 850) {
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
-  const sizes = new Float32Array(count);
 
   for (let i = 0; i < count; i += 1) {
     const radius = 11 + Math.random() * 22;
@@ -63,11 +62,9 @@ function createStarField(count = 850) {
     positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
     positions[i * 3 + 1] = radius * Math.cos(phi);
     positions[i * 3 + 2] = radius * Math.sin(phi) * Math.sin(theta);
-    sizes[i] = 0.6 + Math.random() * 1.3;
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-  geometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
 
   const material = new THREE.PointsMaterial({
     color: 0xa78bfa,
@@ -88,17 +85,18 @@ const stars = createStarField();
 const coreGroup = new THREE.Group();
 constellation.add(coreGroup);
 
-const coreGeometry = new THREE.IcosahedronGeometry(1.08, 4);
-const coreMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0x8b5cf6,
-  emissive: 0x3b0764,
-  emissiveIntensity: 0.58,
-  metalness: 0.72,
-  roughness: 0.16,
-  clearcoat: 1,
-  clearcoatRoughness: 0.12,
-});
-const core = new THREE.Mesh(coreGeometry, coreMaterial);
+const core = new THREE.Mesh(
+  new THREE.IcosahedronGeometry(1.08, 4),
+  new THREE.MeshPhysicalMaterial({
+    color: 0x8b5cf6,
+    emissive: 0x3b0764,
+    emissiveIntensity: 0.58,
+    metalness: 0.72,
+    roughness: 0.16,
+    clearcoat: 1,
+    clearcoatRoughness: 0.12,
+  }),
+);
 coreGroup.add(core);
 
 const wireframe = new THREE.Mesh(
@@ -176,11 +174,18 @@ const projects = [
 ];
 
 const nodeMeshes = [];
+const interactiveTargets = [];
 const connectorMaterial = new THREE.LineBasicMaterial({
   color: 0x8b5cf6,
   transparent: true,
   opacity: 0.27,
 });
+
+function attachInteraction(object, project, group) {
+  object.userData.project = project;
+  object.userData.group = group;
+  interactiveTargets.push(object);
+}
 
 function makeLabel(text) {
   const labelCanvas = document.createElement("canvas");
@@ -208,6 +213,7 @@ function makeLabel(text) {
   const texture = new THREE.CanvasTexture(labelCanvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.minFilter = THREE.LinearFilter;
+
   const sprite = new THREE.Sprite(
     new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }),
   );
@@ -244,10 +250,21 @@ projects.forEach((project, index) => {
       clearcoatRoughness: 0.14,
     }),
   );
-  mesh.userData.project = project;
-  mesh.userData.group = nodeGroup;
+  attachInteraction(mesh, project, nodeGroup);
   nodeGroup.add(mesh);
   nodeMeshes.push(mesh);
+
+  const hitTarget = new THREE.Mesh(
+    new THREE.SphereGeometry(Math.max(project.scale * 1.75, 0.72), 18, 18),
+    new THREE.MeshBasicMaterial({
+      transparent: true,
+      opacity: 0,
+      depthWrite: false,
+      colorWrite: false,
+    }),
+  );
+  attachInteraction(hitTarget, project, nodeGroup);
+  nodeGroup.add(hitTarget);
 
   const orbit = new THREE.Mesh(
     new THREE.TorusGeometry(project.scale * 1.48, 0.006, 8, 80),
@@ -258,15 +275,20 @@ projects.forEach((project, index) => {
 
   const label = makeLabel(project.name);
   label.position.set(0, -(project.scale + 0.58), 0);
+  attachInteraction(label, project, nodeGroup);
   nodeGroup.add(label);
 });
 
-const pointer = new THREE.Vector2(99, 99);
 const raycaster = new THREE.Raycaster();
-let hoveredMesh = null;
+const pointer = new THREE.Vector2(99, 99);
+let hoveredProject = null;
+let hoveredGroup = null;
 let pointerDown = null;
+let selectedProject = null;
 
 function setPanel(project) {
+  selectedProject = project ?? null;
+
   if (!project) {
     panel.classList.remove("is-active");
     panel.innerHTML = `
@@ -287,63 +309,123 @@ function setPanel(project) {
   `;
 }
 
-function updatePointer(event) {
-  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
-  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+function setPointerFromClient(clientX, clientY) {
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
 }
 
-window.addEventListener("pointermove", (event) => {
-  updatePointer(event);
-});
-
-window.addEventListener("pointerdown", (event) => {
-  pointerDown = { x: event.clientX, y: event.clientY };
-});
-
-window.addEventListener("pointerup", (event) => {
-  if (!pointerDown || !hoveredMesh) return;
-  const distance = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
-  pointerDown = null;
-  if (distance < 8) {
-    window.open(hoveredMesh.userData.project.url, "_blank", "noopener,noreferrer");
-  }
-});
-
-window.addEventListener("pointerleave", () => {
-  pointer.set(99, 99);
-});
-
-function updateHover() {
+function pickAt(clientX, clientY) {
+  setPointerFromClient(clientX, clientY);
   raycaster.setFromCamera(pointer, camera);
-  const intersections = raycaster.intersectObjects(nodeMeshes, false);
-  const next = intersections[0]?.object ?? null;
+  const intersection = raycaster.intersectObjects(interactiveTargets, false)[0];
 
-  if (next === hoveredMesh) return;
+  if (!intersection) return null;
 
-  if (hoveredMesh) {
-    hoveredMesh.material.emissiveIntensity = 0.32;
-    hoveredMesh.userData.group.scale.setScalar(1);
+  return {
+    project: intersection.object.userData.project,
+    group: intersection.object.userData.group,
+  };
+}
+
+function openProject(project, event) {
+  if (!project?.url) return;
+
+  if (event?.metaKey || event?.ctrlKey || event?.shiftKey) {
+    window.open(project.url, "_blank", "noopener,noreferrer");
+    return;
   }
 
-  hoveredMesh = next;
+  window.location.assign(project.url);
+}
 
-  if (hoveredMesh) {
-    hoveredMesh.material.emissiveIntensity = 0.95;
-    hoveredMesh.userData.group.scale.setScalar(1.12);
+function updateHover(clientX, clientY) {
+  const hit = pickAt(clientX, clientY);
+  const nextProject = hit?.project ?? null;
+  const nextGroup = hit?.group ?? null;
+
+  if (nextProject === hoveredProject && nextGroup === hoveredGroup) return;
+
+  if (hoveredGroup) {
+    hoveredGroup.scale.setScalar(1);
+    const previousMesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
+    if (previousMesh) previousMesh.material.emissiveIntensity = 0.32;
+  }
+
+  hoveredProject = nextProject;
+  hoveredGroup = nextGroup;
+
+  if (hoveredGroup && hoveredProject) {
+    hoveredGroup.scale.setScalar(1.12);
+    const currentMesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
+    if (currentMesh) currentMesh.material.emissiveIntensity = 0.95;
     document.body.style.cursor = "pointer";
-    setPanel(hoveredMesh.userData.project);
+    setPanel(hoveredProject);
   } else {
     document.body.style.cursor = "default";
     setPanel(null);
   }
 }
 
+canvas.addEventListener("pointermove", (event) => {
+  if (event.pointerType === "mouse") {
+    updateHover(event.clientX, event.clientY);
+  }
+});
+
+canvas.addEventListener("pointerdown", (event) => {
+  pointerDown = {
+    x: event.clientX,
+    y: event.clientY,
+    pointerId: event.pointerId,
+  };
+});
+
+window.addEventListener("pointerup", (event) => {
+  if (!pointerDown || event.pointerId !== pointerDown.pointerId) return;
+
+  const distance = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
+  pointerDown = null;
+
+  if (distance >= 10) return;
+
+  const hit = pickAt(event.clientX, event.clientY);
+  if (hit?.project) {
+    openProject(hit.project, event);
+  }
+});
+
+window.addEventListener("pointercancel", () => {
+  pointerDown = null;
+});
+
+canvas.addEventListener("pointerleave", () => {
+  if (hoveredGroup) {
+    hoveredGroup.scale.setScalar(1);
+    const mesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
+    if (mesh) mesh.material.emissiveIntensity = 0.32;
+  }
+  hoveredProject = null;
+  hoveredGroup = null;
+  document.body.style.cursor = "default";
+  setPanel(null);
+});
+
+panel.addEventListener("click", (event) => {
+  if (selectedProject) openProject(selectedProject, event);
+});
+
+panel.addEventListener("keydown", (event) => {
+  if (!selectedProject || (event.key !== "Enter" && event.key !== " ")) return;
+  event.preventDefault();
+  openProject(selectedProject, event);
+});
+
 const clock = new THREE.Clock();
 
 function animate() {
   const elapsed = clock.getElapsedTime();
   controls.update();
-  updateHover();
 
   if (!prefersReducedMotion) {
     core.rotation.x = elapsed * 0.08;
@@ -370,21 +452,20 @@ function animate() {
 
 function applyResponsiveLayout() {
   const width = window.innerWidth;
+
   if (width > 900) {
     constellation.position.set(2.15, 0, 0);
+    constellation.scale.setScalar(1);
     controls.target.set(1.2, 0, 0);
     camera.position.z = Math.max(camera.position.z, 9.2);
   } else if (width > 620) {
     constellation.position.set(0.6, -0.65, 0);
+    constellation.scale.setScalar(1);
     controls.target.set(0.3, -0.55, 0);
   } else {
     constellation.position.set(0, -1.25, 0);
     constellation.scale.setScalar(0.78);
     controls.target.set(0, -1.2, 0);
-  }
-
-  if (width > 620) {
-    constellation.scale.setScalar(1);
   }
 }
 
