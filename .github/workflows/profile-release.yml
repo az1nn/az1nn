@@ -1,0 +1,105 @@
+name: Release profile
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - PROFILE_VERSION
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Read profile version
+        id: version
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(tr -d '[:space:]' < PROFILE_VERSION)"
+
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-][0-9A-Za-z.-]+)?$ ]]; then
+            echo "Invalid PROFILE_VERSION: $version" >&2
+            exit 1
+          fi
+
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "tag=profile-v$version" >> "$GITHUB_OUTPUT"
+
+          if [[ "$version" == "0.0.0-dev" ]]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Package profile only
+        if: steps.version.outputs.publish == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="${{ steps.version.outputs.version }}"
+          package="az1nn-profile-$version"
+
+          mkdir -p "release/$package"
+          cp README.md index.html styles.css app.js PROFILE_VERSION "release/$package/"
+          if [ -d assets ]; then
+            cp -R assets "release/$package/assets"
+          fi
+
+          (
+            cd release
+            zip -qr "$package.zip" "$package"
+            sha256sum "$package.zip" > "$package.zip.sha256"
+          )
+
+      - name: Create GitHub profile release
+        if: steps.version.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; nothing to do."
+            exit 0
+          fi
+
+          prerelease_args=()
+          if [[ "$VERSION" == *-* ]]; then
+            prerelease_args+=(--prerelease)
+          fi
+
+          cat > release-notes.md <<EOF
+          ## Az1nn Profile $VERSION
+
+          Profile-only release for the GitHub profile and interactive Three.js experience.
+
+          Included:
+          - GitHub profile README
+          - interactive profile runtime
+          - profile assets
+          - profile version metadata
+
+          Source commit: $GITHUB_SHA
+          EOF
+
+          gh release create "$TAG" \
+            "release/az1nn-profile-$VERSION.zip" \
+            "release/az1nn-profile-$VERSION.zip.sha256" \
+            --target "$GITHUB_SHA" \
+            --title "Az1nn Profile v$VERSION" \
+            --notes-file release-notes.md \
+            "${prerelease_args[@]}"
