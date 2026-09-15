@@ -12,8 +12,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: profile-pages
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -21,9 +21,24 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Stage production profile
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp index.html styles.css app.js dist/
+          if [ -d assets ]; then
+            cp -R assets dist/assets
+          fi
+          if [ -f PROFILE_VERSION ]; then
+            cp PROFILE_VERSION dist/PROFILE_VERSION
+          fi
+          touch dist/.nojekyll
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -31,7 +46,7 @@ jobs:
       - name: Upload static site
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: dist
 
       - name: Deploy to GitHub Pages
         id: deployment
