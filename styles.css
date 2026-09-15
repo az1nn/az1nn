@@ -52,6 +52,7 @@ body::before {
   height: 100%;
   display: block;
   outline: none;
+  touch-action: none;
 }
 
 .topbar {
@@ -185,6 +186,7 @@ h1 {
   backdrop-filter: blur(18px);
   box-shadow: 0 18px 70px rgba(0, 0, 0, 0.3);
   transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+  pointer-events: none;
 }
 
 .project-panel.is-active {
