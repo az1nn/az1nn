@@ -26,13 +26,24 @@ The sandbox uses one vertical slice — **Minha Lista / Watchlist** — to pract
 
 ## Quick start
 
-### Database
+From `Study Sandbox/`:
+
+### 1. Database
 
 ```bash
 docker compose up -d db
 ```
 
-### Backend
+The first container boot runs `db/init/001-watchlist.sql`, so the baseline is immediately executable. **Day 1 deliberately replaces this bootstrap convenience with an EF Core migration** so the migration lifecycle becomes part of the exercise.
+
+To reset the study database:
+
+```bash
+docker compose down -v
+docker compose up -d db
+```
+
+### 2. Backend
 
 ```bash
 cd backend/Watchlist.Api
@@ -42,7 +53,9 @@ dotnet run
 
 API defaults to `http://localhost:5080`.
 
-### Frontend
+### 3. Frontend
+
+In another terminal:
 
 ```bash
 cd frontend
@@ -69,6 +82,18 @@ Example:
 curl -H 'X-Study-User: 11111111-1111-1111-1111-111111111111' \
   http://localhost:5080/api/v1/watchlist
 ```
+
+Add one item:
+
+```bash
+curl -X POST \
+  -H 'Content-Type: application/json' \
+  -H 'X-Study-User: 11111111-1111-1111-1111-111111111111' \
+  -d '{"contentId":"globo-content-001"}' \
+  http://localhost:5080/api/v1/watchlist/items
+```
+
+Run that POST twice, then GET the list. The database primary key is the final invariant guard.
 
 ## Source of truth
 

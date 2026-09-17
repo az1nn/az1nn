@@ -5,21 +5,22 @@
 - [x] T001 Create ASP.NET Core project and EF Core model.
 - [x] T002 Create React/Vite project skeleton.
 - [x] T003 Define watchlist HTTP contract.
-- [x] T004 Add PostgreSQL docker-compose service.
+- [x] T004 Add PostgreSQL docker-compose service and disposable bootstrap schema.
 - [x] T005 Add SDD artifacts and study plan.
 
 ## Day 1
 
-- [ ] T101 Create the first EF Core migration.
+- [ ] T101 Replace bootstrap SQL with the first EF Core migration and document the migration lifecycle.
 - [ ] T102 Run POST twice and prove one persisted item.
-- [ ] T103 Add DELETE idempotency behavior.
-- [ ] T104 Add ProblemDetails-style validation response.
+- [x] T103 Baseline DELETE is idempotent; explain and test the behavior.
+- [ ] T104 Narrow the concurrency catch to PostgreSQL unique-violation only.
+- [ ] T105 Add/verify ProblemDetails-style validation response.
 
 ## Day 2
 
-- [ ] T201 Load watchlist from the UI.
-- [ ] T202 Add/remove mutation states.
-- [ ] T203 Add accessible pending/error feedback.
+- [x] T201 Baseline UI loads the watchlist.
+- [x] T202 Baseline UI has add/remove mutation states.
+- [ ] T203 Improve accessible pending/error feedback.
 - [ ] T204 Compare local state with a server-state query library.
 
 ## Day 3
