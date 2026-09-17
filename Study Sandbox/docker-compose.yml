@@ -14,7 +14,6 @@ services:
       retries: 10
     volumes:
       - watchlist-data:/var/lib/postgresql/data
-      - ./db/init:/docker-entrypoint-initdb.d:ro
 
 volumes:
   watchlist-data:

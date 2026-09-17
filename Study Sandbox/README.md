@@ -26,7 +26,7 @@ The sandbox uses one vertical slice — **Minha Lista / Watchlist** — to pract
 
 ## Quick start
 
-From `Study Sandbox/`:
+Run commands from `Study Sandbox/` unless noted otherwise.
 
 ### 1. Database
 
@@ -34,26 +34,37 @@ From `Study Sandbox/`:
 docker compose up -d db
 ```
 
-The first container boot runs `db/init/001-watchlist.sql`, so the baseline is immediately executable. **Day 1 deliberately replaces this bootstrap convenience with an EF Core migration** so the migration lifecycle becomes part of the exercise.
+The database now starts **empty**. Schema ownership belongs to EF Core migrations rather than Docker bootstrap SQL.
 
-To reset the study database:
+If you created the earlier disposable bootstrap volume, reset it once:
 
 ```bash
 docker compose down -v
 docker compose up -d db
 ```
 
-### 2. Backend
+### 2. Restore the EF tool and apply migrations
 
 ```bash
-cd backend/Watchlist.Api
-dotnet restore
-dotnet run
+dotnet tool restore
+dotnet ef database update \
+  --project backend/Watchlist.Api \
+  --startup-project backend/Watchlist.Api
+```
+
+The migration history is recorded by EF Core in `__EFMigrationsHistory`.
+
+See [`docs/MIGRATIONS.md`](docs/MIGRATIONS.md) for the create/review/script/apply/rollback lifecycle.
+
+### 3. Backend
+
+```bash
+dotnet run --project backend/Watchlist.Api
 ```
 
 API defaults to `http://localhost:5080`.
 
-### 3. Frontend
+### 4. Frontend
 
 In another terminal:
 
@@ -93,7 +104,19 @@ curl -X POST \
   http://localhost:5080/api/v1/watchlist/items
 ```
 
-Run that POST twice, then GET the list. The database primary key is the final invariant guard.
+Run that POST twice, then GET the list. The composite database key is the final invariant guard.
+
+## Migration validation without a database
+
+CI also asks EF Core to produce an idempotent SQL script:
+
+```bash
+dotnet ef migrations script --idempotent \
+  --project backend/Watchlist.Api \
+  --startup-project backend/Watchlist.Api
+```
+
+This does not prove production rollout safety, but it catches broken migration metadata/tooling early.
 
 ## Source of truth
 
@@ -104,5 +127,6 @@ Start with:
 3. `.specify/specs/001-watchlist/plan.md`
 4. `.specify/specs/001-watchlist/tasks.md`
 5. `docs/STUDY_PLAN.md`
+6. `docs/MIGRATIONS.md`
 
 The rule is simple: **do not add implementation work that cannot be traced back to a requirement, task or explicit learning experiment.**

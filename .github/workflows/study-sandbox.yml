@@ -16,18 +16,29 @@ permissions:
 
 jobs:
   backend:
-    name: Backend build
+    name: Backend build + migrations
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: "Study Sandbox/backend/Watchlist.Api"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
-      - run: dotnet restore
-      - run: dotnet build --no-restore --configuration Release
+      - name: Restore application
+        working-directory: "Study Sandbox/backend/Watchlist.Api"
+        run: dotnet restore
+      - name: Build application
+        working-directory: "Study Sandbox/backend/Watchlist.Api"
+        run: dotnet build --no-restore --configuration Release
+      - name: Restore local .NET tools
+        working-directory: "Study Sandbox"
+        run: dotnet tool restore
+      - name: Validate EF migration script generation
+        working-directory: "Study Sandbox"
+        run: >-
+          dotnet ef migrations script --idempotent
+          --project backend/Watchlist.Api
+          --startup-project backend/Watchlist.Api
+          --output /tmp/watchlist-migrations.sql
 
   frontend:
     name: Frontend build
