@@ -26,11 +26,11 @@ My **AI Twin** is a digital extension of my engineering process — not a replac
 
 The human side provides judgment, context, taste and responsibility. The twin amplifies exploration, synthesis and execution.
 
-In the interactive profile, the Twin now exposes explicit operating states — **Idle**, **Thinking** and **Building** — while the surrounding projects can be opened in **Project Focus** for a closer look at their role, stack and current direction.
+Inside the interactive profile, the Twin has explicit operating states — **Idle**, **Thinking** and **Building** — plus a local graph console. The console does not pretend to be a remote LLM: it executes commands directly against the profile graph, including project discovery, focus, relations, activity, timeline and state changes.
 
 <div align="center">
 
-[**Open the Human + AI constellation ↗**](https://az1nn.github.io/az1nn/)
+[**Open the living Human + AI graph ↗**](https://az1nn.github.io/az1nn/)
 
 </div>
 
@@ -56,16 +56,18 @@ In the interactive profile, the Twin now exposes explicit operating states — *
   <img width="100%" alt="Alan's GitHub activity graph" src="https://github-readme-activity-graph.vercel.app/graph?username=az1nn&bg_color=0d1117&color=c9d1d9&line=7c3aed&point=a78bfa&area=true&area_color=7c3aed&hide_border=true" />
 </div>
 
-## Interactive profile
+## Living engineering graph
 
 <a href="https://az1nn.github.io/az1nn/">
   <img width="100%" alt="Open the Az1nn interactive Three.js profile" src="./assets/threejs-preview.svg" />
 </a>
 
-The interactive layer is driven from a single profile configuration instead of hardcoded scene content. That makes projects, metadata and future nodes independently evolvable without rebuilding the scene architecture.
+The interactive profile is data-driven from a single profile configuration. V0.3 adds another layer: projects now have explicit graph relationships, recent public GitHub events become a live visual activity ring, and a compact technical timeline explains the progression from **building** to **systemizing**, **augmenting** and **graphing** the engineering process.
+
+The AI Twin console can query this graph locally with commands such as `projects`, `relations`, `activity`, `timeline`, `focus openband`, `open myhub` and `state building`.
 
 <div align="center">
-  <sub>Orbit the scene · enter Project Focus · change AI Twin state · open the systems behind the constellation.</sub>
+  <sub>Orbit the scene · inspect relations · enter Project Focus · watch public activity · use the AI Twin console.</sub>
 </div>
 
 ## Current direction
@@ -76,6 +78,6 @@ The principle behind the work is simple: **software should create leverage**. AI
 
 <div align="center">
 
-`BUILD` · `AUTOMATE` · `EXPLORE` · `REPEAT`
+`BUILD` · `SYSTEMIZE` · `AUGMENT` · `GRAPH`
 
 </div>
