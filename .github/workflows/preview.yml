@@ -2,13 +2,14 @@ name: Preview profile
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
     paths:
       - index.html
       - styles.css
       - app.js
       - README.md
       - assets/**
+      - PROFILE_VERSION
 
 permissions:
   contents: read
@@ -25,7 +26,7 @@ jobs:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     environment:
-      name: github-pages
+      name: profile-preview
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
@@ -51,6 +52,9 @@ jobs:
           if [ -d production/assets ]; then
             cp -R production/assets dist/assets
           fi
+          if [ -f production/PROFILE_VERSION ]; then
+            cp production/PROFILE_VERSION dist/PROFILE_VERSION
+          fi
           touch dist/.nojekyll
 
           preview_dir="dist/previews/pr-${{ github.event.number }}"
@@ -58,6 +62,9 @@ jobs:
           cp candidate/index.html candidate/styles.css candidate/app.js "$preview_dir/"
           if [ -d candidate/assets ]; then
             cp -R candidate/assets "$preview_dir/assets"
+          fi
+          if [ -f candidate/PROFILE_VERSION ]; then
+            cp candidate/PROFILE_VERSION "$preview_dir/PROFILE_VERSION"
           fi
 
           cat > "$preview_dir/preview.json" <<EOF
@@ -70,8 +77,6 @@ jobs:
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: Upload preview site
         uses: actions/upload-pages-artifact@v4
@@ -90,7 +95,8 @@ jobs:
         with:
           script: |
             const marker = '<!-- az1nn-profile-preview -->';
-            const previewUrl = `${process.env.PAGE_URL}previews/pr-${process.env.PR_NUMBER}/`;
+            const baseUrl = process.env.PAGE_URL.endsWith('/') ? process.env.PAGE_URL : `${process.env.PAGE_URL}/`;
+            const previewUrl = `${baseUrl}previews/pr-${process.env.PR_NUMBER}/`;
             const body = `${marker}\n### Profile preview\n\n✅ Preview deployed: ${previewUrl}\n\nThis keeps the production root intact and serves this PR under an isolated path.`;
             const { owner, repo } = context.repo;
             const issue_number = context.issue.number;
