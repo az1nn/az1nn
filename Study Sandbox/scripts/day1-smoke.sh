@@ -14,7 +14,6 @@ export ASPNETCORE_URLS="$API_URL"
 dotnet run \
   --project backend/Watchlist.Api \
   --configuration Release \
-  --no-build \
   >"$LOG_FILE" 2>&1 &
 API_PID=$!
 

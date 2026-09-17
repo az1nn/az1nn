@@ -34,7 +34,7 @@ Run commands from `Study Sandbox/` unless noted otherwise.
 docker compose up -d db
 ```
 
-The database now starts **empty**. Schema ownership belongs to EF Core migrations rather than Docker bootstrap SQL.
+The database starts **empty**. Schema ownership belongs to EF Core migrations rather than Docker bootstrap SQL.
 
 If you created the earlier disposable bootstrap volume, reset it once:
 
@@ -104,7 +104,22 @@ curl -X POST \
   http://localhost:5080/api/v1/watchlist/items
 ```
 
-Run that POST twice, then GET the list. The composite database key is the final invariant guard.
+## Day 1 executable proof
+
+After the database is up and migrations are applied:
+
+```bash
+./scripts/day1-smoke.sh
+```
+
+The script starts the API and proves:
+
+- repeated sequential POST does not duplicate state;
+- GET sees exactly one persisted item;
+- DELETE is idempotent (`204` twice);
+- invalid content returns ValidationProblem with `400`, `errors.contentId` and a `traceId`.
+
+CI runs the same proof against PostgreSQL 17. This automation is evidence of behavior; during the study session, rerun it and explain **why** each assertion holds.
 
 ## Migration validation without a database
 

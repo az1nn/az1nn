@@ -8,13 +8,26 @@
 - [x] T004 Add PostgreSQL docker-compose service and disposable bootstrap schema.
 - [x] T005 Add SDD artifacts and study plan.
 
-## Day 1
+## Day 1 — implementation baseline
 
-- [ ] T101 Replace bootstrap SQL with the first EF Core migration and document the migration lifecycle.
-- [ ] T102 Run POST twice and prove one persisted item.
+- [x] T101 Replace bootstrap SQL with the first EF Core migration and document the migration lifecycle.
+- [x] T102 Run POST twice and prove one persisted item.
 - [x] T103 Baseline DELETE is idempotent; explain and test the behavior.
-- [ ] T104 Narrow the concurrency catch to PostgreSQL unique-violation only.
-- [ ] T105 Add/verify ProblemDetails-style validation response.
+- [x] T104 Narrow the concurrency catch to PostgreSQL unique-violation only.
+- [x] T105 Add/verify ProblemDetails-style validation response.
+
+### Day 1 evidence
+
+- EF Core owns schema creation through `20260917130000_InitialWatchlist`.
+- Docker no longer mounts bootstrap SQL.
+- CI restores the local `dotnet-ef` tool and generates an idempotent migration script.
+- CI applies migrations to PostgreSQL 17 before starting the API.
+- `scripts/day1-smoke.sh` proves two sequential POSTs produce one item through GET.
+- The smoke calls DELETE twice and requires `204` both times.
+- The smoke verifies validation returns `400` with `errors.contentId` and `traceId`.
+- Duplicate-write recovery is restricted to PostgreSQL SQLSTATE `23505` on `PK_watchlist_items`.
+
+> Automation marks the implementation baseline complete. The human study session is still required: rerun the proof, inspect the code and explain the trade-offs without notes.
 
 ## Day 2
 
