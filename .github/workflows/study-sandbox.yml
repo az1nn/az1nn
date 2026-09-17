@@ -1,0 +1,46 @@
+name: Study Sandbox CI
+
+on:
+  pull_request:
+    paths:
+      - "Study Sandbox/**"
+      - ".github/workflows/study-sandbox.yml"
+  push:
+    branches: [main]
+    paths:
+      - "Study Sandbox/**"
+      - ".github/workflows/study-sandbox.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Study Sandbox/backend/Watchlist.Api"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet restore
+      - run: dotnet build --no-restore --configuration Release
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Study Sandbox/frontend"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: "Study Sandbox/frontend/package.json"
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
