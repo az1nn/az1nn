@@ -1,0 +1,82 @@
+name: Study Sandbox CI
+
+on:
+  pull_request:
+    paths:
+      - "Study Sandbox/**"
+      - ".github/workflows/study-sandbox.yml"
+  push:
+    branches: [main]
+    paths:
+      - "Study Sandbox/**"
+      - ".github/workflows/study-sandbox.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend build + Day 1 smoke
+    runs-on: ubuntu-latest
+    env:
+      ConnectionStrings__Watchlist: Host=localhost;Port=5432;Database=watchlist;Username=watchlist;Password=watchlist
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: watchlist
+          POSTGRES_USER: watchlist
+          POSTGRES_PASSWORD: watchlist
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U watchlist -d watchlist"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - name: Restore application
+        working-directory: "Study Sandbox/backend/Watchlist.Api"
+        run: dotnet restore
+      - name: Build application
+        working-directory: "Study Sandbox/backend/Watchlist.Api"
+        run: dotnet build --no-restore --configuration Release
+      - name: Restore local .NET tools
+        working-directory: "Study Sandbox"
+        run: dotnet tool restore
+      - name: Validate EF migration script generation
+        working-directory: "Study Sandbox"
+        run: >-
+          dotnet ef migrations script --idempotent
+          --project backend/Watchlist.Api
+          --startup-project backend/Watchlist.Api
+          --output /tmp/watchlist-migrations.sql
+      - name: Apply migrations to CI PostgreSQL
+        working-directory: "Study Sandbox"
+        run: >-
+          dotnet ef database update
+          --project backend/Watchlist.Api
+          --startup-project backend/Watchlist.Api
+      - name: Run Day 1 API smoke
+        working-directory: "Study Sandbox"
+        run: ./scripts/day1-smoke.sh
+
+  frontend:
+    name: Frontend build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "Study Sandbox/frontend"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: "Study Sandbox/frontend/package.json"
+      - run: npm install --no-audit --no-fund
+      - run: npm run build
