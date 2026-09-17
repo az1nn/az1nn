@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using Watchlist.Api.Contracts;
 using Watchlist.Api.Data;
 using Watchlist.Api.Domain;
@@ -56,10 +57,19 @@ watchlist.MapPost("/items", async (
         return Results.Unauthorized();
 
     if (string.IsNullOrWhiteSpace(request.ContentId))
-        return Results.ValidationProblem(new Dictionary<string, string[]>
-        {
-            ["contentId"] = ["Content id is required."]
-        });
+    {
+        return Results.ValidationProblem(
+            errors: new Dictionary<string, string[]>
+            {
+                ["contentId"] = ["Content id is required."]
+            },
+            statusCode: StatusCodes.Status400BadRequest,
+            title: "Request validation failed.",
+            extensions: new Dictionary<string, object?>
+            {
+                ["traceId"] = http.TraceIdentifier
+            });
+    }
 
     var contentId = request.ContentId.Trim();
 
@@ -79,14 +89,20 @@ watchlist.MapPost("/items", async (
     {
         await db.SaveChangesAsync(ct);
     }
-    catch (DbUpdateException)
+    catch (DbUpdateException ex) when (
+        ex.InnerException is PostgresException
+        {
+            SqlState: PostgresErrorCodes.UniqueViolation,
+            ConstraintName: "PK_watchlist_items"
+        })
     {
-        // Study baseline: the composite PK is the final concurrency guard.
-        // Day 1 exercise: narrow this catch to the provider's unique-violation case.
         db.ChangeTracker.Clear();
+
         var winner = await db.WatchlistItems
             .AsNoTracking()
-            .SingleAsync(x => x.UserId == userId && x.ContentId == contentId, ct);
+            .SingleAsync(
+                x => x.UserId == userId && x.ContentId == contentId,
+                ct);
 
         return Results.Ok(new WatchlistItemResponse(winner.ContentId, winner.AddedAt));
     }
