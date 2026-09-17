@@ -1,116 +1,130 @@
-import { FormEvent, useEffect, useState } from "react";
-import {
-  addToWatchlist,
-  getWatchlist,
-  removeFromWatchlist,
-  type WatchlistItem,
-} from "./api/watchlist";
+import { type FormEvent, useState } from "react";
+import { useWatchlist } from "./watchlist/useWatchlist";
 
 export function App() {
-  const [items, setItems] = useState<WatchlistItem[]>([]);
   const [contentId, setContentId] = useState("globo-content-001");
-  const [loading, setLoading] = useState(true);
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { items, query, addMutation, removeMutation } = useWatchlist();
 
-  useEffect(() => {
-    const controller = new AbortController();
+  const mutationError = addMutation.isError
+    ? "Could not add item. The server remains the source of truth."
+    : removeMutation.isError
+      ? "Could not remove item. Refresh or retry without assuming local success."
+      : null;
 
-    getWatchlist(controller.signal)
-      .then(setItems)
-      .catch((err) => {
-        if (err.name !== "AbortError") setError("Could not load watchlist.");
-      })
-      .finally(() => setLoading(false));
+  const liveStatus = addMutation.isPending
+    ? "Adding item."
+    : removeMutation.isPending
+      ? `Removing ${removeMutation.variables}.`
+      : query.isFetching && !query.isPending
+        ? "Refreshing watchlist."
+        : "";
 
-    return () => controller.abort();
-  }, []);
-
-  async function handleAdd(event: FormEvent) {
+  function handleAdd(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!contentId.trim() || pending) return;
 
-    setPending(true);
-    setError(null);
+    const normalized = contentId.trim();
+    if (!normalized || addMutation.isPending) return;
 
-    try {
-      const item = await addToWatchlist(contentId.trim());
-      setItems((current) =>
-        current.some((x) => x.contentId === item.contentId)
-          ? current
-          : [item, ...current],
-      );
-    } catch {
-      setError("Could not add item.");
-    } finally {
-      setPending(false);
-    }
-  }
-
-  async function handleRemove(id: string) {
-    setPending(true);
-    setError(null);
-
-    try {
-      await removeFromWatchlist(id);
-      setItems((current) => current.filter((x) => x.contentId !== id));
-    } catch {
-      setError("Could not remove item.");
-    } finally {
-      setPending(false);
-    }
+    addMutation.mutate(normalized);
   }
 
   return (
     <main className="shell">
       <p className="eyebrow">NTT-G HANDBOOK · STUDY SANDBOX</p>
       <h1>Minha Lista</h1>
-      <p className="lead">One vertical slice. Contract to production thinking.</p>
+      <p className="lead">
+        One vertical slice. Contract to production thinking.
+      </p>
 
-      <form onSubmit={handleAdd} className="card form">
+      <form onSubmit={handleAdd} className="card form" aria-busy={addMutation.isPending}>
         <label htmlFor="content-id">Content id</label>
         <div className="row">
           <input
             id="content-id"
             value={contentId}
-            onChange={(e) => setContentId(e.target.value)}
+            onChange={(event) => setContentId(event.target.value)}
+            aria-describedby="mutation-status"
           />
-          <button disabled={pending}>{pending ? "Working…" : "Add"}</button>
+          <button
+            type="submit"
+            disabled={!contentId.trim() || addMutation.isPending}
+          >
+            {addMutation.isPending ? "Adding…" : "Add"}
+          </button>
         </div>
       </form>
 
-      {error && <p role="alert" className="error">{error}</p>}
+      <p
+        id="mutation-status"
+        className="status"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {liveStatus}
+      </p>
 
-      <section className="card">
+      {mutationError && (
+        <p role="alert" className="error">
+          {mutationError}
+        </p>
+      )}
+
+      <section className="card" aria-busy={query.isFetching}>
         <div className="section-heading">
           <h2>Saved items</h2>
-          <span>{items.length}</span>
+          <div className="count-group">
+            {query.isFetching && !query.isPending && <small>Refreshing…</small>}
+            <span aria-label={`${items.length} saved items`}>{items.length}</span>
+          </div>
         </div>
 
-        {loading ? (
-          <p>Loading…</p>
+        {query.isPending ? (
+          <p role="status">Loading watchlist…</p>
+        ) : query.isError ? (
+          <div className="error-block" role="alert">
+            <p className="error">Could not load watchlist.</p>
+            <button className="ghost" type="button" onClick={() => query.refetch()}>
+              Retry
+            </button>
+          </div>
         ) : items.length === 0 ? (
           <p className="muted">Nothing saved yet.</p>
         ) : (
           <ul>
-            {items.map((item) => (
-              <li key={item.contentId}>
-                <div>
-                  <strong>{item.contentId}</strong>
-                  <small>{new Date(item.addedAt).toLocaleString()}</small>
-                </div>
-                <button
-                  className="ghost"
-                  disabled={pending}
-                  onClick={() => handleRemove(item.contentId)}
-                >
-                  Remove
-                </button>
-              </li>
-            ))}
+            {items.map((item) => {
+              const removingThisItem =
+                removeMutation.isPending && removeMutation.variables === item.contentId;
+
+              return (
+                <li key={item.contentId}>
+                  <div>
+                    <strong>{item.contentId}</strong>
+                    <small>{new Date(item.addedAt).toLocaleString()}</small>
+                  </div>
+                  <button
+                    type="button"
+                    className="ghost"
+                    disabled={removeMutation.isPending}
+                    aria-label={`Remove ${item.contentId} from watchlist`}
+                    onClick={() => removeMutation.mutate(item.contentId)}
+                  >
+                    {removingThisItem ? "Removing…" : "Remove"}
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>
+
+      <aside className="learning-note" aria-label="Day 2 learning note">
+        <strong>Day 2 lens</strong>
+        <span>
+          Input text is UI state. Watchlist items are server state. Successful mutations
+          invalidate the watchlist query so the API remains authoritative.
+        </span>
+      </aside>
     </main>
   );
 }
