@@ -30,6 +30,16 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Validate profile runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module --check < app.js
+          node --input-type=module --check < profile.config.js
+          test -s index.html
+          test -s styles.css
+          test -s profile.config.js
+
       - name: Stage preview candidate
         shell: bash
         run: |
