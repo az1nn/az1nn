@@ -7,6 +7,7 @@ on:
       - index.html
       - styles.css
       - app.js
+      - profile.config.js
       - README.md
       - assets/**
       - PROFILE_VERSION
@@ -35,7 +36,7 @@ jobs:
           set -euo pipefail
 
           mkdir -p artifact/profile
-          cp index.html styles.css app.js artifact/profile/
+          cp index.html styles.css app.js profile.config.js artifact/profile/
 
           if [ -d assets ]; then
             cp -R assets artifact/profile/assets
