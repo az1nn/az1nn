@@ -35,6 +35,71 @@ export const PROFILE = {
       },
     },
   },
+  activity: {
+    endpoint: "https://api.github.com/users/az1nn/events/public?per_page=30",
+    maxNodes: 18,
+    label: "PUBLIC GITHUB ACTIVITY",
+  },
+  timeline: [
+    {
+      phase: "01",
+      title: "Build",
+      summary: "Ship full-stack products and learn through working systems.",
+    },
+    {
+      phase: "02",
+      title: "Systemize",
+      summary: "Turn repeated engineering decisions into reusable architecture, specifications and automation.",
+    },
+    {
+      phase: "03",
+      title: "Augment",
+      summary: "Use LLMs, RAG and agents as leverage inside a deliberate engineering process.",
+    },
+    {
+      phase: "04",
+      title: "Graph",
+      summary: "Connect projects, decisions and delivery evidence into a living engineering map.",
+    },
+  ],
+  relations: [
+    {
+      source: "cpxlabs-admin",
+      target: "myhub",
+      label: "Spec + Graph Engineering",
+      strength: 0.95,
+    },
+    {
+      source: "cpxlabs-admin",
+      target: "openband",
+      label: "Product architecture",
+      strength: 0.58,
+    },
+    {
+      source: "pg-researcher",
+      target: "zapizapi",
+      label: "AI intake + knowledge",
+      strength: 0.9,
+    },
+    {
+      source: "cpx-labs",
+      target: "openband",
+      label: "Interactive web",
+      strength: 0.72,
+    },
+    {
+      source: "myhub",
+      target: "zapizapi",
+      label: "Personal systems",
+      strength: 0.54,
+    },
+    {
+      source: "pg-researcher",
+      target: "myhub",
+      label: "Structured knowledge",
+      strength: 0.62,
+    },
+  ],
   projects: [
     {
       id: "openband",
