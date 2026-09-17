@@ -64,10 +64,20 @@ try {
 
 assert(Number.isInteger(PROFILE.activity?.maxNodes) && PROFILE.activity.maxNodes > 0 && PROFILE.activity.maxNodes <= 50, "activity.maxNodes must be an integer between 1 and 50");
 
+const conversation = PROFILE.conversation || {};
+assert(conversation.mode === "local-grounded", "conversation.mode must remain local-grounded in V0.4");
+assert(conversation.gateway === null, "conversation.gateway must remain null in the static V0.4 client");
+assert(Number.isInteger(conversation.maxHistory) && conversation.maxHistory >= 4 && conversation.maxHistory <= 50, "conversation.maxHistory must be an integer between 4 and 50");
+assert(Number.isInteger(conversation.activityCacheTtlMs) && conversation.activityCacheTtlMs >= 60000 && conversation.activityCacheTtlMs <= 3600000, "conversation.activityCacheTtlMs must be between 1 minute and 1 hour");
+assert(Array.isArray(conversation.suggestions) && conversation.suggestions.length >= 2 && conversation.suggestions.length <= 8, "conversation.suggestions must contain between 2 and 8 prompts");
+for (const suggestion of conversation.suggestions || []) {
+  assert(typeof suggestion === "string" && suggestion.trim().length > 0, "conversation suggestions must be non-empty strings");
+}
+
 if (errors.length) {
   console.error("Profile graph validation failed:");
   for (const error of errors) console.error(`- ${error}`);
   process.exit(1);
 }
 
-console.log(`Profile graph valid: ${PROFILE.projects.length} projects, ${(PROFILE.relations || []).length} relations, ${PROFILE.timeline.length} timeline phases.`);
+console.log(`Profile graph valid: ${PROFILE.projects.length} projects, ${(PROFILE.relations || []).length} relations, ${PROFILE.timeline.length} timeline phases, Twin conversation ${conversation.mode}.`);
