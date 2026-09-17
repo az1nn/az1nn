@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+import { PROFILE } from "./profile.config.js";
 
 const canvas = document.querySelector("#scene");
 const panel = document.querySelector("#project-panel");
@@ -21,17 +22,14 @@ const scene = new THREE.Scene();
 scene.fog = new THREE.FogExp2(0x070a10, 0.052);
 
 const camera = new THREE.PerspectiveCamera(46, window.innerWidth / window.innerHeight, 0.1, 100);
-camera.position.set(0.6, 0.25, 10.8);
-
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.dampingFactor = 0.055;
 controls.enablePan = false;
-controls.minDistance = 6.2;
+controls.minDistance = 5.8;
 controls.maxDistance = 14;
 controls.rotateSpeed = 0.48;
 controls.zoomSpeed = 0.72;
-controls.target.set(1.2, 0, 0);
 
 scene.add(new THREE.AmbientLight(0x9aa6bf, 1.3));
 
@@ -50,7 +48,7 @@ scene.add(blueLight);
 const constellation = new THREE.Group();
 scene.add(constellation);
 
-function createStarField(count = 850) {
+function createStarField(count = 900) {
   const geometry = new THREE.BufferGeometry();
   const positions = new Float32Array(count * 3);
 
@@ -64,12 +62,11 @@ function createStarField(count = 850) {
   }
 
   geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-
   const material = new THREE.PointsMaterial({
     color: 0xa78bfa,
     size: 0.035,
     transparent: true,
-    opacity: 0.62,
+    opacity: 0.6,
     depthWrite: false,
     sizeAttenuation: true,
   });
@@ -80,6 +77,47 @@ function createStarField(count = 850) {
 }
 
 const stars = createStarField();
+
+function makeLabel(text, accent = "#c4b5fd") {
+  const labelCanvas = document.createElement("canvas");
+  const ctx = labelCanvas.getContext("2d");
+  const ratio = 2;
+  labelCanvas.width = 620 * ratio;
+  labelCanvas.height = 104 * ratio;
+  ctx.scale(ratio, ratio);
+  ctx.clearRect(0, 0, 620, 104);
+  ctx.font = "700 25px Inter, system-ui, sans-serif";
+
+  const width = Math.min(570, ctx.measureText(text).width + 46);
+  const left = (620 - width) / 2;
+  ctx.fillStyle = "rgba(8, 12, 19, 0.82)";
+  ctx.strokeStyle = accent;
+  ctx.globalAlpha = 0.55;
+  ctx.lineWidth = 1.2;
+  ctx.beginPath();
+  ctx.roundRect(left, 20, width, 56, 28);
+  ctx.fill();
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = "#eef2ff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(text, 310, 48);
+
+  const texture = new THREE.CanvasTexture(labelCanvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.minFilter = THREE.LinearFilter;
+
+  const sprite = new THREE.Sprite(
+    new THREE.SpriteMaterial({
+      map: texture,
+      transparent: true,
+      depthWrite: false,
+    }),
+  );
+  sprite.scale.set(3.65, 0.62, 1);
+  return sprite;
+}
 
 const coreGroup = new THREE.Group();
 constellation.add(coreGroup);
@@ -134,125 +172,43 @@ const halo = new THREE.Mesh(
 );
 coreGroup.add(halo);
 
-const projects = [
-  {
-    name: "OpenBand",
-    short: "Music creation + immersive product UX",
-    url: "https://github.com/az1nn/openband",
-    position: [-3.45, 1.7, -0.35],
-    scale: 0.42,
-    kind: "project",
-  },
-  {
-    name: "CPXLABS Admin",
-    short: "Enterprise React/Vite + Engineering Graph",
-    url: "https://github.com/az1nn/cpxlabs-admin",
-    position: [3.3, 1.85, -0.7],
-    scale: 0.48,
-    kind: "project",
-  },
-  {
-    name: "PG Researcher",
-    short: "AI-assisted research and knowledge workflows",
-    url: "https://github.com/az1nn/pg-researcher",
-    position: [3.7, -1.75, 0.05],
-    scale: 0.38,
-    kind: "project",
-  },
-  {
-    name: "CPX Labs",
-    short: "Product engineering, automation and interactive web",
-    url: "https://github.com/az1nn/cpx-labs",
-    position: [-2.9, -1.85, 0.25],
-    scale: 0.43,
-    kind: "project",
-  },
-  {
-    name: "Archive / Systems",
-    short: "Experiments, templates and shipped software",
-    url: "https://github.com/az1nn?tab=repositories",
-    position: [0.4, -3.2, -1.15],
-    scale: 0.34,
-    kind: "project",
-  },
-];
-
-const aiTwin = {
-  name: "AI Twin",
-  short: "A digital extension of my engineering loop: research, architecture, documentation, automation and building.",
-  kind: "twin",
-};
-
-const nodeMeshes = [];
-const interactiveTargets = [];
-const connectorMaterial = new THREE.LineBasicMaterial({
-  color: 0x8b5cf6,
-  transparent: true,
-  opacity: 0.27,
-});
-
-function attachInteraction(object, entity, group) {
-  object.userData.project = entity;
-  object.userData.group = group;
-  interactiveTargets.push(object);
-}
-
-function makeLabel(text, accent = "#c4b5fd") {
-  const labelCanvas = document.createElement("canvas");
-  const ctx = labelCanvas.getContext("2d");
-  const ratio = 2;
-  labelCanvas.width = 560 * ratio;
-  labelCanvas.height = 94 * ratio;
-  ctx.scale(ratio, ratio);
-  ctx.clearRect(0, 0, 560, 94);
-  ctx.font = "700 25px Inter, system-ui, sans-serif";
-  const width = Math.min(520, ctx.measureText(text).width + 42);
-  const left = (560 - width) / 2;
-  ctx.fillStyle = "rgba(8, 12, 19, 0.78)";
-  ctx.strokeStyle = accent;
-  ctx.globalAlpha = 0.5;
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.roundRect(left, 18, width, 54, 27);
-  ctx.fill();
-  ctx.stroke();
-  ctx.globalAlpha = 1;
-  ctx.fillStyle = "#eef2ff";
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillText(text, 280, 45);
-
-  const texture = new THREE.CanvasTexture(labelCanvas);
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.minFilter = THREE.LinearFilter;
-
-  const sprite = new THREE.Sprite(
-    new THREE.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }),
-  );
-  sprite.scale.set(3.45, 0.58, 1);
-  return sprite;
-}
-
 const coreLabel = makeLabel("AZ1NN", "#a78bfa");
 coreLabel.position.set(0, -1.85, 0);
 coreGroup.add(coreLabel);
 
-projects.forEach((project, index) => {
-  const position = new THREE.Vector3(...project.position);
+const interactiveTargets = [];
+const records = [];
+const connectorMaterial = new THREE.LineBasicMaterial({
+  color: 0x8b5cf6,
+  transparent: true,
+  opacity: 0.24,
+});
 
-  const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+function attachInteraction(object, record) {
+  object.userData.record = record;
+  interactiveTargets.push(object);
+}
+
+function createConnector(position, color = 0x8b5cf6, opacity = 0.24) {
+  const geometry = new THREE.BufferGeometry().setFromPoints([
     new THREE.Vector3(0, 0, 0),
     position,
   ]);
-  const line = new THREE.Line(lineGeometry, connectorMaterial.clone());
-  line.material.opacity = 0.18 + index * 0.018;
+  const material = connectorMaterial.clone();
+  material.color.setHex(color);
+  material.opacity = opacity;
+  const line = new THREE.Line(geometry, material);
   constellation.add(line);
+  return line;
+}
 
-  const nodeGroup = new THREE.Group();
-  nodeGroup.position.copy(position);
-  nodeGroup.userData.basePosition = position.clone();
-  nodeGroup.userData.phase = index * 1.37;
-  constellation.add(nodeGroup);
+function createProjectRecord(project, index) {
+  const position = new THREE.Vector3(...project.position);
+  const group = new THREE.Group();
+  group.position.copy(position);
+  group.userData.basePosition = position.clone();
+  group.userData.phase = index * 1.37;
+  constellation.add(group);
 
   const mesh = new THREE.Mesh(
     new THREE.SphereGeometry(project.scale, 36, 36),
@@ -264,14 +220,29 @@ projects.forEach((project, index) => {
       roughness: 0.22,
       clearcoat: 0.9,
       clearcoatRoughness: 0.14,
+      transparent: true,
+      opacity: 1,
     }),
   );
-  attachInteraction(mesh, project, nodeGroup);
-  nodeGroup.add(mesh);
-  nodeMeshes.push(mesh);
+  group.add(mesh);
+
+  const orbit = new THREE.Mesh(
+    new THREE.TorusGeometry(project.scale * 1.48, 0.006, 8, 80),
+    new THREE.MeshBasicMaterial({
+      color: 0xc4b5fd,
+      transparent: true,
+      opacity: 0.34,
+    }),
+  );
+  orbit.rotation.x = Math.PI / 2;
+  group.add(orbit);
+
+  const label = makeLabel(project.name);
+  label.position.set(0, -(project.scale + 0.58), 0);
+  group.add(label);
 
   const hitTarget = new THREE.Mesh(
-    new THREE.SphereGeometry(Math.max(project.scale * 1.75, 0.72), 18, 18),
+    new THREE.SphereGeometry(Math.max(project.scale * 1.8, 0.74), 18, 18),
     new THREE.MeshBasicMaterial({
       transparent: true,
       opacity: 0,
@@ -279,26 +250,33 @@ projects.forEach((project, index) => {
       colorWrite: false,
     }),
   );
-  attachInteraction(hitTarget, project, nodeGroup);
-  nodeGroup.add(hitTarget);
+  group.add(hitTarget);
 
-  const orbit = new THREE.Mesh(
-    new THREE.TorusGeometry(project.scale * 1.48, 0.006, 8, 80),
-    new THREE.MeshBasicMaterial({ color: 0xc4b5fd, transparent: true, opacity: 0.34 }),
-  );
-  orbit.rotation.x = Math.PI / 2;
-  nodeGroup.add(orbit);
+  const line = createConnector(position, 0x8b5cf6, 0.2 + index * 0.012);
+  const record = {
+    entity: project,
+    group,
+    mesh,
+    orbit,
+    label,
+    line,
+    baseMeshOpacity: 1,
+    baseLineOpacity: line.material.opacity,
+  };
 
-  const label = makeLabel(project.name);
-  label.position.set(0, -(project.scale + 0.58), 0);
-  attachInteraction(label, project, nodeGroup);
-  nodeGroup.add(label);
-});
+  attachInteraction(mesh, record);
+  attachInteraction(hitTarget, record);
+  attachInteraction(label, record);
+  records.push(record);
+  return record;
+}
 
-const twinBasePosition = new THREE.Vector3(1.92, 0.35, 1.05);
+PROFILE.projects.forEach(createProjectRecord);
+
+const twinPosition = new THREE.Vector3(...PROFILE.twin.position);
 const twinGroup = new THREE.Group();
-twinGroup.position.copy(twinBasePosition);
-twinGroup.userData.basePosition = twinBasePosition.clone();
+twinGroup.position.copy(twinPosition);
+twinGroup.userData.basePosition = twinPosition.clone();
 twinGroup.userData.phase = 9.8;
 constellation.add(twinGroup);
 
@@ -312,12 +290,10 @@ const twinCore = new THREE.Mesh(
     roughness: 0.12,
     clearcoat: 1,
     transparent: true,
-    opacity: 0.72,
+    opacity: 0.76,
   }),
 );
-attachInteraction(twinCore, aiTwin, twinGroup);
 twinGroup.add(twinCore);
-nodeMeshes.push(twinCore);
 
 const twinWireframe = new THREE.Mesh(
   new THREE.IcosahedronGeometry(0.9, 2),
@@ -362,8 +338,12 @@ twinRingB.material = twinRingA.material.clone();
 twinRingB.material.opacity = 0.34;
 twinGroup.add(twinRingB);
 
+const twinLabel = makeLabel("AI TWIN", "#38bdf8");
+twinLabel.position.set(0, -1.42, 0);
+twinGroup.add(twinLabel);
+
 const twinHitTarget = new THREE.Mesh(
-  new THREE.SphereGeometry(1.18, 20, 20),
+  new THREE.SphereGeometry(1.2, 20, 20),
   new THREE.MeshBasicMaterial({
     transparent: true,
     opacity: 0,
@@ -371,211 +351,328 @@ const twinHitTarget = new THREE.Mesh(
     colorWrite: false,
   }),
 );
-attachInteraction(twinHitTarget, aiTwin, twinGroup);
 twinGroup.add(twinHitTarget);
-
-const twinLabel = makeLabel("AI TWIN", "#38bdf8");
-twinLabel.position.set(0, -1.42, 0);
-attachInteraction(twinLabel, aiTwin, twinGroup);
-twinGroup.add(twinLabel);
 
 const twinLight = new THREE.PointLight(0x38bdf8, 7, 7, 2);
 twinLight.position.set(0, 0, 0.7);
 twinGroup.add(twinLight);
 
-const twinLinkPositions = new Float32Array([
-  0, 0, 0,
-  twinBasePosition.x, twinBasePosition.y, twinBasePosition.z,
-]);
-const twinLinkGeometry = new THREE.BufferGeometry();
-twinLinkGeometry.setAttribute("position", new THREE.BufferAttribute(twinLinkPositions, 3));
-const twinLink = new THREE.Line(
-  twinLinkGeometry,
-  new THREE.LineBasicMaterial({
-    color: 0x38bdf8,
-    transparent: true,
-    opacity: 0.34,
-    blending: THREE.AdditiveBlending,
-  }),
-);
-constellation.add(twinLink);
+const twinLine = createConnector(twinPosition, 0x38bdf8, 0.38);
+const twinRecord = {
+  entity: PROFILE.twin,
+  group: twinGroup,
+  mesh: twinCore,
+  orbit: twinRingA,
+  label: twinLabel,
+  line: twinLine,
+  baseMeshOpacity: 0.76,
+  baseLineOpacity: 0.38,
+};
+attachInteraction(twinCore, twinRecord);
+attachInteraction(twinHitTarget, twinRecord);
+attachInteraction(twinLabel, twinRecord);
+records.push(twinRecord);
 
-let twinActive = true;
+let twinState = "thinking";
+
+function applyTwinState(state) {
+  if (!PROFILE.twin.states[state]) return;
+  twinState = state;
+  const config = PROFILE.twin.states[state];
+  const color = new THREE.Color(config.color);
+  const emissive = new THREE.Color(config.emissive);
+
+  twinCore.material.color.copy(color);
+  twinCore.material.emissive.copy(emissive);
+  twinCore.material.emissiveIntensity = config.intensity;
+  twinWireframe.material.color.copy(color);
+  twinAura.material.color.copy(color);
+  twinRingA.material.color.copy(color);
+  twinRingB.material.color.copy(color);
+  twinLight.color.copy(color);
+  twinLight.intensity = state === "idle" ? 4.5 : state === "thinking" ? 7 : 10;
+  twinLine.material.color.copy(color);
+
+  if (focusedRecord === twinRecord) renderPanel(twinRecord);
+}
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2(99, 99);
-let hoveredProject = null;
-let hoveredGroup = null;
 let pointerDown = null;
-let selectedProject = null;
+let hoveredRecord = null;
+let focusedRecord = null;
+let cameraTransition = false;
+const desiredCamera = new THREE.Vector3();
+const desiredTarget = new THREE.Vector3();
 
-function setPanel(project) {
-  selectedProject = project ?? null;
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
 
-  if (!project) {
-    panel.classList.remove("is-active");
-    panel.setAttribute("tabindex", "-1");
-    panel.innerHTML = `
-      <span class="panel-kicker">HUMAN + AI</span>
-      <h2>Engineering constellation</h2>
-      <p>Explore the projects around AZ1NN or select the holographic AI Twin.</p>
-      <span class="panel-action">select a node to inspect it ↗</span>
-    `;
+function projectPanelHtml(project) {
+  const tags = (project.tags || [])
+    .map((tag) => `<span class="panel-tag">${escapeHtml(tag)}</span>`)
+    .join("");
+
+  return `
+    <div class="panel-topline">
+      <span class="panel-kicker">${escapeHtml(project.category || "PROJECT")} · ${escapeHtml(project.status || "ACTIVE")}</span>
+      <span class="panel-mode">PROJECT FOCUS</span>
+    </div>
+    <h2>${escapeHtml(project.name)}</h2>
+    <p>${escapeHtml(project.short)}</p>
+    <div class="panel-tags">${tags}</div>
+    <div class="panel-actions">
+      <button type="button" class="panel-button primary" data-action="open-repo">Open repository ↗</button>
+      <button type="button" class="panel-button" data-action="back">Back to constellation</button>
+    </div>
+  `;
+}
+
+function twinPanelHtml() {
+  const state = PROFILE.twin.states[twinState];
+  const capabilities = PROFILE.twin.capabilities
+    .map((item) => `<span class="panel-tag twin-tag">${escapeHtml(item)}</span>`)
+    .join("");
+  const states = Object.entries(PROFILE.twin.states)
+    .map(
+      ([key, value]) => `
+        <button type="button" class="state-button ${key === twinState ? "is-selected" : ""}" data-twin-state="${key}">
+          ${escapeHtml(value.label)}
+        </button>`,
+    )
+    .join("");
+
+  return `
+    <div class="panel-topline">
+      <span class="panel-kicker">AI TWIN · ${escapeHtml(state.label)}</span>
+      <span class="panel-mode twin-mode">DIGITAL COUNTERPART</span>
+    </div>
+    <h2>${escapeHtml(PROFILE.twin.name)}</h2>
+    <p>${escapeHtml(state.description)}</p>
+    <div class="panel-tags">${capabilities}</div>
+    <div class="twin-state-picker" aria-label="AI Twin state">${states}</div>
+    <div class="panel-actions">
+      <button type="button" class="panel-button" data-action="back">Back to constellation</button>
+    </div>
+  `;
+}
+
+function defaultPanelHtml() {
+  return `
+    <span class="panel-kicker">SYSTEM MAP</span>
+    <h2>Engineering constellation</h2>
+    <p>Projects, experiments and the AI Twin are rendered from one profile configuration.</p>
+    <span class="panel-action-hint">select a node to inspect it</span>
+  `;
+}
+
+function renderPanel(record = focusedRecord || hoveredRecord) {
+  if (!record) {
+    panel.classList.remove("is-active", "is-twin");
+    panel.innerHTML = defaultPanelHtml();
     return;
   }
 
   panel.classList.add("is-active");
-  panel.setAttribute("tabindex", "0");
+  panel.classList.toggle("is-twin", record.entity.kind === "twin");
+  panel.innerHTML = record.entity.kind === "twin" ? twinPanelHtml() : projectPanelHtml(record.entity);
+}
 
-  if (project.kind === "twin") {
-    panel.innerHTML = `
-      <span class="panel-kicker">DIGITAL COUNTERPART</span>
-      <h2>AI Twin ${twinActive ? "· online" : "· idle"}</h2>
-      <p>${project.short}</p>
-      <span class="panel-action">${twinActive ? "click to quiet the twin" : "click to activate the twin"}</span>
-    `;
-    return;
+function getLayout() {
+  const width = window.innerWidth;
+  if (width > 900) {
+    return {
+      constellationPosition: new THREE.Vector3(2.15, 0, 0),
+      constellationScale: 1,
+      camera: new THREE.Vector3(0.6, 0.25, 10.8),
+      target: new THREE.Vector3(1.2, 0, 0),
+    };
   }
-
-  panel.innerHTML = `
-    <span class="panel-kicker">PROJECT NODE</span>
-    <h2>${project.name}</h2>
-    <p>${project.short}</p>
-    <span class="panel-action">open repository ↗</span>
-  `;
-}
-
-function setPointerFromClient(clientX, clientY) {
-  const rect = canvas.getBoundingClientRect();
-  pointer.x = ((clientX - rect.left) / rect.width) * 2 - 1;
-  pointer.y = -((clientY - rect.top) / rect.height) * 2 + 1;
-}
-
-function pickAt(clientX, clientY) {
-  setPointerFromClient(clientX, clientY);
-  raycaster.setFromCamera(pointer, camera);
-  const intersection = raycaster.intersectObjects(interactiveTargets, false)[0];
-
-  if (!intersection) return null;
-
+  if (width > 620) {
+    return {
+      constellationPosition: new THREE.Vector3(0.6, -0.7, 0),
+      constellationScale: 0.94,
+      camera: new THREE.Vector3(0.3, 0.1, 11.5),
+      target: new THREE.Vector3(0.3, -0.55, 0),
+    };
+  }
   return {
-    project: intersection.object.userData.project,
-    group: intersection.object.userData.group,
+    constellationPosition: new THREE.Vector3(0, -1.28, 0),
+    constellationScale: 0.76,
+    camera: new THREE.Vector3(0, 0.25, 12.4),
+    target: new THREE.Vector3(0, -1.2, 0),
   };
 }
 
-function activateEntity(project, event) {
-  if (!project) return;
+function applyResponsiveLayout({ resetCamera = false } = {}) {
+  const layout = getLayout();
+  constellation.position.copy(layout.constellationPosition);
+  constellation.scale.setScalar(layout.constellationScale);
 
-  if (project.kind === "twin") {
-    twinActive = !twinActive;
-    setPanel(project);
-    return;
-  }
-
-  if (!project.url) return;
-
-  if (event?.metaKey || event?.ctrlKey || event?.shiftKey) {
-    window.open(project.url, "_blank", "noopener,noreferrer");
-    return;
-  }
-
-  window.location.assign(project.url);
-}
-
-function updateHover(clientX, clientY) {
-  const hit = pickAt(clientX, clientY);
-  const nextProject = hit?.project ?? null;
-  const nextGroup = hit?.group ?? null;
-
-  if (nextProject === hoveredProject && nextGroup === hoveredGroup) return;
-
-  if (hoveredGroup) {
-    hoveredGroup.scale.setScalar(1);
-    const previousMesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
-    if (previousMesh?.material?.emissiveIntensity !== undefined) {
-      previousMesh.material.emissiveIntensity = previousMesh === twinCore ? 1.15 : 0.32;
+  if (resetCamera || !focusedRecord) {
+    desiredCamera.copy(layout.camera);
+    desiredTarget.copy(layout.target);
+    if (resetCamera) {
+      camera.position.copy(layout.camera);
+      controls.target.copy(layout.target);
+      controls.update();
     }
-  }
-
-  hoveredProject = nextProject;
-  hoveredGroup = nextGroup;
-
-  if (hoveredGroup && hoveredProject) {
-    hoveredGroup.scale.setScalar(1.12);
-    const currentMesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
-    if (currentMesh?.material?.emissiveIntensity !== undefined) {
-      currentMesh.material.emissiveIntensity = currentMesh === twinCore ? 1.8 : 0.95;
-    }
-    document.body.style.cursor = "pointer";
-    setPanel(hoveredProject);
-  } else {
-    document.body.style.cursor = "default";
-    setPanel(null);
   }
 }
 
-canvas.addEventListener("pointermove", (event) => {
-  if (event.pointerType === "mouse") {
-    updateHover(event.clientX, event.clientY);
-  }
+function startCameraTransition(target, distance = 4.6) {
+  desiredTarget.copy(target);
+  desiredCamera.set(target.x + 0.2, target.y + 0.3, target.z + distance);
+  cameraTransition = true;
+  controls.enabled = false;
+}
+
+function focusRecord(record) {
+  focusedRecord = record;
+  document.body.classList.add("is-focused");
+
+  const worldPosition = new THREE.Vector3();
+  record.group.getWorldPosition(worldPosition);
+  startCameraTransition(worldPosition, record.entity.kind === "twin" ? 4.2 : 4.5);
+  renderPanel(record);
+}
+
+function clearFocus() {
+  focusedRecord = null;
+  document.body.classList.remove("is-focused");
+  const layout = getLayout();
+  desiredCamera.copy(layout.camera);
+  desiredTarget.copy(layout.target);
+  cameraTransition = true;
+  controls.enabled = false;
+  renderPanel(hoveredRecord);
+}
+
+function updatePointer(event) {
+  pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+}
+
+function pickRecord(clientX, clientY) {
+  pointer.x = (clientX / window.innerWidth) * 2 - 1;
+  pointer.y = -(clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const hit = raycaster.intersectObjects(interactiveTargets, false)[0];
+  return hit?.object?.userData?.record ?? null;
+}
+
+window.addEventListener("pointermove", (event) => {
+  updatePointer(event);
+  if (focusedRecord) return;
+
+  const next = pickRecord(event.clientX, event.clientY);
+  if (next === hoveredRecord) return;
+  hoveredRecord = next;
+  document.body.style.cursor = hoveredRecord ? "pointer" : "default";
+  renderPanel(hoveredRecord);
 });
 
-canvas.addEventListener("pointerdown", (event) => {
-  pointerDown = {
-    x: event.clientX,
-    y: event.clientY,
-    pointerId: event.pointerId,
-  };
+window.addEventListener("pointerdown", (event) => {
+  pointerDown = { x: event.clientX, y: event.clientY };
 });
 
 window.addEventListener("pointerup", (event) => {
-  if (!pointerDown || event.pointerId !== pointerDown.pointerId) return;
-
+  if (!pointerDown) return;
   const distance = Math.hypot(event.clientX - pointerDown.x, event.clientY - pointerDown.y);
   pointerDown = null;
+  if (distance > 8) return;
 
-  if (distance >= 10) return;
-
-  const hit = pickAt(event.clientX, event.clientY);
-  if (hit?.project) {
-    activateEntity(hit.project, event);
-  }
+  const record = pickRecord(event.clientX, event.clientY);
+  if (record) focusRecord(record);
 });
 
-window.addEventListener("pointercancel", () => {
-  pointerDown = null;
-});
-
-canvas.addEventListener("pointerleave", () => {
-  if (hoveredGroup) {
-    hoveredGroup.scale.setScalar(1);
-    const mesh = hoveredGroup.children.find((child) => nodeMeshes.includes(child));
-    if (mesh?.material?.emissiveIntensity !== undefined) {
-      mesh.material.emissiveIntensity = mesh === twinCore ? 1.15 : 0.32;
-    }
+window.addEventListener("pointerleave", () => {
+  pointer.set(99, 99);
+  if (!focusedRecord) {
+    hoveredRecord = null;
+    document.body.style.cursor = "default";
+    renderPanel();
   }
-  hoveredProject = null;
-  hoveredGroup = null;
-  document.body.style.cursor = "default";
-  setPanel(null);
 });
 
 panel.addEventListener("click", (event) => {
-  if (selectedProject) activateEntity(selectedProject, event);
+  const target = event.target.closest("button");
+  if (!target) return;
+
+  const action = target.dataset.action;
+  const state = target.dataset.twinState;
+
+  if (state) {
+    applyTwinState(state);
+    return;
+  }
+
+  if (action === "back") {
+    clearFocus();
+    return;
+  }
+
+  if (action === "open-repo" && focusedRecord?.entity?.url) {
+    window.open(focusedRecord.entity.url, "_blank", "noopener,noreferrer");
+  }
 });
 
-panel.addEventListener("keydown", (event) => {
-  if (!selectedProject || (event.key !== "Enter" && event.key !== " ")) return;
-  event.preventDefault();
-  activateEntity(selectedProject, event);
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && focusedRecord) {
+    clearFocus();
+  }
 });
+
+function animateRecord(record, elapsed) {
+  const isFocused = focusedRecord === record;
+  const isDimmed = Boolean(focusedRecord && !isFocused);
+  const isHovered = !focusedRecord && hoveredRecord === record;
+  const targetScale = isFocused ? 1.2 : isDimmed ? 0.64 : isHovered ? 1.1 : 1;
+  const nextScale = THREE.MathUtils.lerp(record.group.scale.x, targetScale, 0.08);
+  record.group.scale.setScalar(nextScale);
+
+  const targetMeshOpacity = isDimmed ? 0.2 : record.baseMeshOpacity;
+  record.mesh.material.opacity = THREE.MathUtils.lerp(record.mesh.material.opacity, targetMeshOpacity, 0.08);
+  record.label.material.opacity = THREE.MathUtils.lerp(record.label.material.opacity, isDimmed ? 0.18 : 1, 0.08);
+  record.line.material.opacity = THREE.MathUtils.lerp(
+    record.line.material.opacity,
+    isDimmed ? 0.05 : record.baseLineOpacity,
+    0.08,
+  );
+
+  if (!prefersReducedMotion) {
+    const base = record.group.userData.basePosition;
+    const phase = record.group.userData.phase;
+    const amplitude = isFocused ? 0.025 : 0.085;
+    record.group.position.x = base.x + Math.cos(elapsed * 0.42 + phase) * amplitude;
+    record.group.position.y = base.y + Math.sin(elapsed * 0.58 + phase) * amplitude * 1.2;
+    record.group.position.z = base.z + Math.sin(elapsed * 0.36 + phase) * amplitude * 0.8;
+    record.mesh.rotation.y += record.entity.kind === "twin" ? 0.006 : 0.003;
+  }
+}
 
 const clock = new THREE.Clock();
 
 function animate() {
   const elapsed = clock.getElapsedTime();
-  controls.update();
+
+  if (cameraTransition) {
+    camera.position.lerp(desiredCamera, 0.085);
+    controls.target.lerp(desiredTarget, 0.1);
+    if (camera.position.distanceTo(desiredCamera) < 0.025 && controls.target.distanceTo(desiredTarget) < 0.025) {
+      camera.position.copy(desiredCamera);
+      controls.target.copy(desiredTarget);
+      cameraTransition = false;
+      controls.enabled = true;
+    }
+  } else {
+    controls.update();
+  }
 
   if (!prefersReducedMotion) {
     core.rotation.x = elapsed * 0.08;
@@ -584,60 +681,16 @@ function animate() {
     wireframe.rotation.y = elapsed * 0.08;
     halo.scale.setScalar(1 + Math.sin(elapsed * 1.5) * 0.018);
     stars.rotation.y = elapsed * 0.0022;
-
-    nodeMeshes.forEach((mesh) => {
-      const group = mesh.userData.group;
-      const base = group?.userData?.basePosition;
-      const phase = group?.userData?.phase ?? 0;
-      if (!group || !base) return;
-
-      const amplitude = mesh === twinCore ? 0.055 : 0.08;
-      group.position.x = base.x + Math.cos(elapsed * 0.42 + phase) * amplitude;
-      group.position.y = base.y + Math.sin(elapsed * 0.58 + phase) * (amplitude + 0.02);
-      group.position.z = base.z + Math.sin(elapsed * 0.36 + phase) * amplitude;
-      mesh.rotation.y += mesh === twinCore ? 0.008 : 0.003;
-    });
-
-    twinWireframe.rotation.x = -elapsed * 0.18;
-    twinWireframe.rotation.y = elapsed * 0.25;
+    twinWireframe.rotation.x = elapsed * 0.18;
+    twinWireframe.rotation.y = -elapsed * 0.24;
     twinRingA.rotation.z = elapsed * 0.18;
     twinRingB.rotation.z = -elapsed * 0.12;
+    twinAura.scale.setScalar(1 + Math.sin(elapsed * 2) * 0.035);
   }
 
-  const twinPulse = 0.5 + Math.sin(elapsed * 3.2) * 0.5;
-  twinAura.material.opacity = twinActive ? 0.08 + twinPulse * 0.08 : 0.025;
-  twinLink.material.opacity = twinActive ? 0.26 + twinPulse * 0.28 : 0.09;
-  twinLight.intensity = twinActive ? 6 + twinPulse * 5 : 1.6;
-  twinCore.material.opacity = twinActive ? 0.72 : 0.32;
-  twinWireframe.material.opacity = twinActive ? 0.72 : 0.22;
-
-  const linkPositions = twinLinkGeometry.attributes.position.array;
-  linkPositions[3] = twinGroup.position.x;
-  linkPositions[4] = twinGroup.position.y;
-  linkPositions[5] = twinGroup.position.z;
-  twinLinkGeometry.attributes.position.needsUpdate = true;
-
+  records.forEach((record) => animateRecord(record, elapsed));
   renderer.render(scene, camera);
   requestAnimationFrame(animate);
-}
-
-function applyResponsiveLayout() {
-  const width = window.innerWidth;
-
-  if (width > 900) {
-    constellation.position.set(2.15, 0, 0);
-    constellation.scale.setScalar(1);
-    controls.target.set(1.2, 0, 0);
-    camera.position.z = Math.max(camera.position.z, 9.2);
-  } else if (width > 620) {
-    constellation.position.set(0.6, -0.65, 0);
-    constellation.scale.setScalar(0.94);
-    controls.target.set(0.3, -0.55, 0);
-  } else {
-    constellation.position.set(0, -1.25, 0);
-    constellation.scale.setScalar(0.72);
-    controls.target.set(0, -1.2, 0);
-  }
 }
 
 function onResize() {
@@ -649,6 +702,7 @@ function onResize() {
 }
 
 window.addEventListener("resize", onResize, { passive: true });
-applyResponsiveLayout();
-setPanel(null);
+applyTwinState(twinState);
+applyResponsiveLayout({ resetCamera: true });
+renderPanel();
 animate();
