@@ -1,0 +1,62 @@
+name: Build profile preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, edited]
+    paths:
+      - index.html
+      - styles.css
+      - app.js
+      - README.md
+      - assets/**
+      - PROFILE_VERSION
+
+permissions:
+  contents: read
+
+concurrency:
+  group: profile-preview-build-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build-preview:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout candidate
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Stage preview candidate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p artifact/profile
+          cp index.html styles.css app.js artifact/profile/
+
+          if [ -d assets ]; then
+            cp -R assets artifact/profile/assets
+          fi
+
+          if [ -f PROFILE_VERSION ]; then
+            cp PROFILE_VERSION artifact/profile/PROFILE_VERSION
+          fi
+
+          cat > artifact/meta.json <<EOF
+          {
+            "pull_request": ${{ github.event.pull_request.number }},
+            "sha": "${{ github.event.pull_request.head.sha }}",
+            "head_ref": "${{ github.event.pull_request.head.ref }}"
+          }
+          EOF
+
+      - name: Upload preview candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: profile-preview
+          path: artifact
+          retention-days: 2
+          if-no-files-found: error

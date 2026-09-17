@@ -1,0 +1,142 @@
+name: Deploy profile preview
+
+on:
+  workflow_run:
+    workflows:
+      - Build profile preview
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+  pages: write
+  id-token: write
+  pull-requests: write
+
+concurrency:
+  group: profile-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy-preview:
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout production
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          path: production
+
+      - name: Download preview candidate
+        uses: actions/download-artifact@v5
+        with:
+          name: profile-preview
+          path: candidate
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Read preview metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pr_number="$(python - <<'PY'
+          import json
+          with open('candidate/meta.json', encoding='utf-8') as fh:
+              print(json.load(fh)['pull_request'])
+          PY
+          )"
+
+          sha="$(python - <<'PY'
+          import json
+          with open('candidate/meta.json', encoding='utf-8') as fh:
+              print(json.load(fh)['sha'])
+          PY
+          )"
+
+          echo "pr_number=$pr_number" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Stage production and isolated preview
+        shell: bash
+        env:
+          PR_NUMBER: ${{ steps.meta.outputs.pr_number }}
+          PREVIEW_SHA: ${{ steps.meta.outputs.sha }}
+        run: |
+          set -euo pipefail
+
+          mkdir -p dist
+          cp production/index.html production/styles.css production/app.js dist/
+
+          if [ -d production/assets ]; then
+            cp -R production/assets dist/assets
+          fi
+
+          if [ -f production/PROFILE_VERSION ]; then
+            cp production/PROFILE_VERSION dist/PROFILE_VERSION
+          fi
+
+          touch dist/.nojekyll
+
+          preview_dir="dist/previews/pr-$PR_NUMBER"
+          mkdir -p "$preview_dir"
+          cp candidate/profile/index.html candidate/profile/styles.css candidate/profile/app.js "$preview_dir/"
+
+          if [ -d candidate/profile/assets ]; then
+            cp -R candidate/profile/assets "$preview_dir/assets"
+          fi
+
+          if [ -f candidate/profile/PROFILE_VERSION ]; then
+            cp candidate/profile/PROFILE_VERSION "$preview_dir/PROFILE_VERSION"
+          fi
+
+          cat > "$preview_dir/preview.json" <<EOF
+          {
+            "environment": "preview",
+            "pull_request": $PR_NUMBER,
+            "sha": "$PREVIEW_SHA"
+          }
+          EOF
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload preview site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+      - name: Deploy preview
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Publish preview link on PR
+        uses: actions/github-script@v7
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          PR_NUMBER: ${{ steps.meta.outputs.pr_number }}
+          PREVIEW_SHA: ${{ steps.meta.outputs.sha }}
+        with:
+          script: |
+            const marker = '<!-- az1nn-profile-preview -->';
+            const baseUrl = process.env.PAGE_URL.endsWith('/') ? process.env.PAGE_URL : `${process.env.PAGE_URL}/`;
+            const previewUrl = `${baseUrl}previews/pr-${process.env.PR_NUMBER}/`;
+            const shortSha = process.env.PREVIEW_SHA.slice(0, 12);
+            const body = `${marker}\n### Profile preview\n\n✅ Preview deployed: ${previewUrl}\n\nCandidate: \`${shortSha}\`\n\nProduction remains at the site root; this PR is isolated under its preview path.`;
+            const { owner, repo } = context.repo;
+            const issue_number = Number(process.env.PR_NUMBER);
+            const comments = await github.paginate(github.rest.issues.listComments, { owner, repo, issue_number });
+            const existing = comments.find((comment) => comment.body?.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }
