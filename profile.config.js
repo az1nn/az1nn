@@ -40,6 +40,18 @@ export const PROFILE = {
     maxNodes: 18,
     label: "PUBLIC GITHUB ACTIVITY",
   },
+  conversation: {
+    mode: "local-grounded",
+    maxHistory: 12,
+    activityCacheTtlMs: 300000,
+    gateway: null,
+    suggestions: [
+      "What are you building now?",
+      "How are CPXLABS Admin and MyHub related?",
+      "Tell me about OpenBand",
+      "Show recent activity",
+    ],
+  },
   timeline: [
     {
       phase: "01",
