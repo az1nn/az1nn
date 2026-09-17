@@ -7,6 +7,7 @@
     <meta name="description" content="Az1nn — a living Human + AI engineering graph by Alan." />
     <title>Az1nn · Living Engineering Graph</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./twin.conversation.css" />
     <style>
       body.is-focused .panel-button[data-action="show-relations"] { display: none; }
     </style>
@@ -29,7 +30,7 @@
       </a>
       <div class="topbar-meta">
         <span id="activity-status" class="live-chip is-loading">ACTIVITY / SYNC</span>
-        <span class="version-chip">PROFILE / V0.3</span>
+        <span class="version-chip">PROFILE / V0.4</span>
         <a class="quiet-link" href="https://github.com/az1nn/az1nn">source ↗</a>
       </div>
     </header>
@@ -39,7 +40,7 @@
         <p class="eyebrow">HUMAN + AI · LIVING ENGINEERING GRAPH</p>
         <h1 id="title">Human engineering, amplified by AI.</h1>
         <p class="lede">
-          Explore <strong>az1nn</strong> as a connected system: projects, engineering relationships, recent public GitHub activity and an AI Twin with a local graph console.
+          Explore <strong>az1nn</strong> as a connected system: projects, engineering relationships, recent public GitHub activity and a graph-grounded conversational AI Twin.
         </p>
         <div class="chips" aria-label="Current engineering focus">
           <span>React / Vite</span>
@@ -53,7 +54,7 @@
       <aside id="project-panel" class="project-panel" aria-live="polite">
         <span class="panel-kicker">LIVING SYSTEM MAP</span>
         <h2>Engineering constellation</h2>
-        <p>Loading the graph, public activity layer and AI Twin console.</p>
+        <p>Loading the graph, public activity layer and AI Twin interfaces.</p>
       </aside>
     </main>
 
@@ -62,7 +63,7 @@
       <i></i>
       <span>select nodes to focus</span>
       <i></i>
-      <span>open the twin console</span>
+      <span>ask the AI Twin</span>
     </footer>
 
     <noscript>This experience requires JavaScript and WebGL.</noscript>
@@ -71,5 +72,6 @@
       profilePanel?.addEventListener("pointermove", (event) => event.stopPropagation());
     </script>
     <script type="module" src="./app.js"></script>
+    <script type="module" src="./twin.conversation.js"></script>
   </body>
 </html>

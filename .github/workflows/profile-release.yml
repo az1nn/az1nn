@@ -51,7 +51,7 @@ jobs:
           package="az1nn-profile-$version"
 
           mkdir -p "release/$package"
-          cp README.md index.html styles.css app.js profile.config.js PROFILE_VERSION "release/$package/"
+          cp README.md index.html styles.css app.js profile.config.js twin.conversation.css twin.conversation.js twin.model.mjs PROFILE_VERSION "release/$package/"
           if [ -d assets ]; then
             cp -R assets "release/$package/assets"
           fi
@@ -91,6 +91,7 @@ jobs:
           - GitHub profile README
           - interactive profile runtime
           - data-driven profile configuration
+          - graph-grounded AI Twin conversation runtime
           - profile assets
           - profile version metadata
 
