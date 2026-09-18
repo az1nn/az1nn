@@ -26,6 +26,8 @@ My **AI Twin** is a digital extension of my engineering process — not a replac
 
 The human side provides judgment, context, taste and responsibility. The twin amplifies exploration, synthesis and execution.
 
+In the interactive profile, the Twin now exposes explicit operating states — **Idle**, **Thinking** and **Building** — while the surrounding projects can be opened in **Project Focus** for a closer look at their role, stack and current direction.
+
 <div align="center">
 
 [**Open the Human + AI constellation ↗**](https://az1nn.github.io/az1nn/)
@@ -60,8 +62,10 @@ The human side provides judgment, context, taste and responsibility. The twin am
   <img width="100%" alt="Open the Az1nn interactive Three.js profile" src="./assets/threejs-preview.svg" />
 </a>
 
+The interactive layer is driven from a single profile configuration instead of hardcoded scene content. That makes projects, metadata and future nodes independently evolvable without rebuilding the scene architecture.
+
 <div align="center">
-  <sub>Orbit the scene · inspect project nodes · activate the AI Twin · open the systems behind the constellation.</sub>
+  <sub>Orbit the scene · enter Project Focus · change AI Twin state · open the systems behind the constellation.</sub>
 </div>
 
 ## Current direction

@@ -7,6 +7,7 @@ on:
       - index.html
       - styles.css
       - app.js
+      - profile.config.js
       - README.md
       - assets/**
       - PROFILE_VERSION
@@ -29,13 +30,23 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
 
+      - name: Validate profile runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module --check < app.js
+          node --input-type=module --check < profile.config.js
+          test -s index.html
+          test -s styles.css
+          test -s profile.config.js
+
       - name: Stage preview candidate
         shell: bash
         run: |
           set -euo pipefail
 
           mkdir -p artifact/profile
-          cp index.html styles.css app.js artifact/profile/
+          cp index.html styles.css app.js profile.config.js artifact/profile/
 
           if [ -d assets ]; then
             cp -R assets artifact/profile/assets
