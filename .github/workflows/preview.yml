@@ -9,6 +9,8 @@ on:
       - app.js
       - profile.config.js
       - README.md
+      - scripts/**
+      - docs/**
       - assets/**
       - PROFILE_VERSION
 
@@ -36,6 +38,7 @@ jobs:
           set -euo pipefail
           node --input-type=module --check < app.js
           node --input-type=module --check < profile.config.js
+          node scripts/validate-profile.mjs
           test -s index.html
           test -s styles.css
           test -s profile.config.js

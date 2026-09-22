@@ -4,9 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#070a10" />
-    <meta name="description" content="Az1nn — an interactive Human + AI engineering constellation by Alan." />
-    <title>Az1nn · Human + AI Constellation</title>
+    <meta name="description" content="Az1nn — a living Human + AI engineering graph by Alan." />
+    <title>Az1nn · Living Engineering Graph</title>
     <link rel="stylesheet" href="./styles.css" />
+    <style>
+      body.is-focused .panel-button[data-action="show-relations"] { display: none; }
+    </style>
     <script type="importmap">
       {
         "imports": {
@@ -17,7 +20,7 @@
     </script>
   </head>
   <body>
-    <canvas id="scene" aria-label="Interactive Human plus AI engineering constellation"></canvas>
+    <canvas id="scene" aria-label="Interactive living engineering graph with projects, relations, activity and AI Twin"></canvas>
 
     <header class="topbar">
       <a class="brand" href="https://github.com/az1nn" aria-label="Open Az1nn on GitHub">
@@ -25,17 +28,18 @@
         <span>AZ1NN</span>
       </a>
       <div class="topbar-meta">
-        <span class="version-chip">PROFILE / V0.2</span>
+        <span id="activity-status" class="live-chip is-loading">ACTIVITY / SYNC</span>
+        <span class="version-chip">PROFILE / V0.3</span>
         <a class="quiet-link" href="https://github.com/az1nn/az1nn">source ↗</a>
       </div>
     </header>
 
     <main class="shell">
       <section class="intro" aria-labelledby="title">
-        <p class="eyebrow">HUMAN + AI · FULL STACK · PRODUCT ENGINEERING</p>
+        <p class="eyebrow">HUMAN + AI · LIVING ENGINEERING GRAPH</p>
         <h1 id="title">Human engineering, amplified by AI.</h1>
         <p class="lede">
-          Explore the systems around <strong>az1nn</strong>. Select a project to enter Project Focus or open the cyan AI Twin to inspect its current engineering state.
+          Explore <strong>az1nn</strong> as a connected system: projects, engineering relationships, recent public GitHub activity and an AI Twin with a local graph console.
         </p>
         <div class="chips" aria-label="Current engineering focus">
           <span>React / Vite</span>
@@ -47,22 +51,25 @@
       </section>
 
       <aside id="project-panel" class="project-panel" aria-live="polite">
-        <span class="panel-kicker">SYSTEM MAP</span>
+        <span class="panel-kicker">LIVING SYSTEM MAP</span>
         <h2>Engineering constellation</h2>
-        <p>Projects, experiments and the AI Twin are rendered from one profile configuration.</p>
-        <span class="panel-action-hint">select a node to inspect it</span>
+        <p>Loading the graph, public activity layer and AI Twin console.</p>
       </aside>
     </main>
 
     <footer class="hint">
       <span>drag to orbit</span>
       <i></i>
-      <span>scroll / pinch to zoom</span>
+      <span>select nodes to focus</span>
       <i></i>
-      <span>esc exits focus</span>
+      <span>open the twin console</span>
     </footer>
 
     <noscript>This experience requires JavaScript and WebGL.</noscript>
+    <script>
+      const profilePanel = document.getElementById("project-panel");
+      profilePanel?.addEventListener("pointermove", (event) => event.stopPropagation());
+    </script>
     <script type="module" src="./app.js"></script>
   </body>
 </html>
