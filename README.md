@@ -26,7 +26,9 @@ My **AI Twin** is a digital extension of my engineering process — not a replac
 
 The human side provides judgment, context, taste and responsibility. The twin amplifies exploration, synthesis and execution.
 
-Inside the interactive profile, the Twin has explicit operating states — **Idle**, **Thinking** and **Building** — plus a local graph console. The console does not pretend to be a remote LLM: it executes commands directly against the profile graph, including project discovery, focus, relations, activity, timeline and state changes.
+Inside the interactive profile, the Twin has explicit operating states — **Idle**, **Thinking** and **Building** — plus two complementary interfaces. The V0.3 local graph console executes explicit commands against the scene; V0.4 adds a graph-grounded conversational surface that answers natural-language questions using the public project graph and recent public GitHub activity.
+
+The conversational Twin remains intentionally local-first and read-only. It does not embed an API key or pretend that the static GitHub Pages client is a privileged remote LLM. Unsupported questions fail closed instead of inventing private context or capabilities.
 
 <div align="center">
 
@@ -62,12 +64,14 @@ Inside the interactive profile, the Twin has explicit operating states — **Idl
   <img width="100%" alt="Open the Az1nn interactive Three.js profile" src="./assets/threejs-preview.svg" />
 </a>
 
-The interactive profile is data-driven from a single profile configuration. V0.3 adds another layer: projects now have explicit graph relationships, recent public GitHub events become a live visual activity ring, and a compact technical timeline explains the progression from **building** to **systemizing**, **augmenting** and **graphing** the engineering process.
+The interactive profile is data-driven from a single profile configuration. Projects have explicit graph relationships, recent public GitHub events become a live visual activity ring, and a compact technical timeline explains the progression from **building** to **systemizing**, **augmenting** and **graphing** the engineering process.
 
-The AI Twin console can query this graph locally with commands such as `projects`, `relations`, `activity`, `timeline`, `focus openband`, `open myhub` and `state building`.
+V0.4 makes that graph conversational. The **Ask AI Twin** interface can answer questions such as “What are you building now?”, “How are CPXLABS Admin and MyHub related?” or “Tell me about OpenBand”, expose its grounding evidence and offer allowlisted actions to focus projects, open public repositories or move into graph/activity/timeline views.
+
+The underlying V0.3 console remains available with commands such as `projects`, `relations`, `activity`, `timeline`, `focus openband`, `open myhub` and `state building`.
 
 <div align="center">
-  <sub>Orbit the scene · inspect relations · enter Project Focus · watch public activity · use the AI Twin console.</sub>
+  <sub>Orbit the scene · inspect relations · enter Project Focus · watch public activity · ask the AI Twin.</sub>
 </div>
 
 ## Current direction
