@@ -34,15 +34,17 @@ jobs:
           node --input-type=module --check < profile.config.js
           node --input-type=module --check < twin.conversation.js
           node --check twin.model.mjs
+          node --check twin.gateway.mjs
           node scripts/validate-profile.mjs
           node scripts/validate-twin.mjs
+          node scripts/validate-gateway.mjs
 
       - name: Stage production profile
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p dist
-          cp index.html styles.css app.js profile.config.js twin.conversation.css twin.conversation.js twin.model.mjs dist/
+          cp index.html styles.css app.js profile.config.js twin.conversation.css twin.conversation.js twin.model.mjs twin.gateway.mjs dist/
           if [ -d assets ]; then
             cp -R assets dist/assets
           fi

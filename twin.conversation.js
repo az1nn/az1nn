@@ -1,5 +1,6 @@
 import { PROFILE } from "./profile.config.js";
-import { getTwinSuggestions, resolveTwinQuery } from "./twin.model.mjs";
+import { getTwinSuggestions } from "./twin.model.mjs";
+import { resolveTwinTurn } from "./twin.gateway.mjs";
 
 const CACHE_KEY = "az1nn:twin:activity:v1";
 const MAX_HISTORY = PROFILE.conversation?.maxHistory || 12;
@@ -228,7 +229,7 @@ async function submitQuery(rawQuery) {
   form.classList.add("is-thinking");
 
   const activity = await loadActivity();
-  const response = resolveTwinQuery(PROFILE, query, { activity });
+  const response = await resolveTwinTurn(PROFILE, query, { activity });
 
   state.history.push({
     role: "twin",

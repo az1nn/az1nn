@@ -44,7 +44,13 @@ export const PROFILE = {
     mode: "local-grounded",
     maxHistory: 12,
     activityCacheTtlMs: 300000,
-    gateway: null,
+    gateway: {
+      enabled: false,
+      version: "0.5",
+      endpoint: null,
+      timeoutMs: 6000,
+      clientProfileVersion: "0.4.0",
+    },
     suggestions: [
       "What are you building now?",
       "How are CPXLABS Admin and MyHub related?",
