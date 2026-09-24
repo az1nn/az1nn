@@ -1,0 +1,17 @@
+# .NET
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Node
+**/node_modules/
+**/dist/
+
+# Local
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode/
+.idea/
