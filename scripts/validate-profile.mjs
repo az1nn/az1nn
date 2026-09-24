@@ -65,8 +65,13 @@ try {
 assert(Number.isInteger(PROFILE.activity?.maxNodes) && PROFILE.activity.maxNodes > 0 && PROFILE.activity.maxNodes <= 50, "activity.maxNodes must be an integer between 1 and 50");
 
 const conversation = PROFILE.conversation || {};
-assert(conversation.mode === "local-grounded", "conversation.mode must remain local-grounded in V0.4");
-assert(conversation.gateway === null, "conversation.gateway must remain null in the static V0.4 client");
+assert(conversation.mode === "local-grounded", "conversation.mode must remain local-grounded during V0.5 Phase A");
+assert(conversation.gateway && typeof conversation.gateway === "object", "conversation.gateway config is required in V0.5 Phase A");
+assert(conversation.gateway?.enabled === false, "conversation.gateway must remain disabled by default in V0.5 Phase A");
+assert(conversation.gateway?.version === "0.5", "conversation.gateway.version must be 0.5");
+assert(conversation.gateway?.endpoint === null, "conversation.gateway.endpoint must remain null until a human hosting decision");
+assert(Number.isInteger(conversation.gateway?.timeoutMs) && conversation.gateway.timeoutMs >= 500 && conversation.gateway.timeoutMs <= 15000, "conversation.gateway.timeoutMs must be between 500 and 15000ms");
+assert(conversation.gateway?.clientProfileVersion === "0.4.0", "conversation.gateway.clientProfileVersion must match the current released profile");
 assert(Number.isInteger(conversation.maxHistory) && conversation.maxHistory >= 4 && conversation.maxHistory <= 50, "conversation.maxHistory must be an integer between 4 and 50");
 assert(Number.isInteger(conversation.activityCacheTtlMs) && conversation.activityCacheTtlMs >= 60000 && conversation.activityCacheTtlMs <= 3600000, "conversation.activityCacheTtlMs must be between 1 minute and 1 hour");
 assert(Array.isArray(conversation.suggestions) && conversation.suggestions.length >= 2 && conversation.suggestions.length <= 8, "conversation.suggestions must contain between 2 and 8 prompts");
