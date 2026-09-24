@@ -1,6 +1,6 @@
 # Profile V0.5 — Remote Twin Gateway Specification
 
-Status: **PROPOSED**
+Status: **ACCEPTED — PHASE A IN PROGRESS**
 Workstream: **Az1nn interactive profile / AI Twin**
 Baseline: `main@6108115376d294845c0ac3f292822c425bffee5d`
 Previous release: `profile-v0.4.0`
