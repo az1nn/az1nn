@@ -2,12 +2,23 @@ import { resolveTwinQuery } from "./twin.model.mjs";
 
 export const TWIN_GATEWAY_VERSION = "0.5";
 
+const ALLOWED_REQUEST_KEYS = new Set(["version", "question", "profile", "activity", "client"]);
+const ALLOWED_PROFILE_KEYS = new Set(["projects", "relations", "timeline"]);
+const ALLOWED_CLIENT_KEYS = new Set(["profileVersion"]);
+const ALLOWED_PROJECT_KEYS = new Set(["id", "name", "category", "status", "short", "url", "tags"]);
+const ALLOWED_RELATION_KEYS = new Set(["source", "target", "label", "strength"]);
+const ALLOWED_TIMELINE_KEYS = new Set(["phase", "title", "summary"]);
+const ALLOWED_ACTIVITY_KEYS = new Set(["id", "type", "repo", "createdAt", "commits"]);
 const ALLOWED_RESPONSE_KEYS = new Set(["answer", "grounding", "actions", "mode", "requestId"]);
 const ALLOWED_GROUNDING_KINDS = new Set(["profile", "project", "relation", "timeline", "activity"]);
 const ALLOWED_ACTION_TYPES = new Set(["focus-project", "open-repo", "show-view"]);
 const ALLOWED_VIEWS = new Set(["activity", "relations", "timeline"]);
 const MAX_QUESTION_LENGTH = 280;
+const MAX_PROJECT_ITEMS = 50;
+const MAX_RELATION_ITEMS = 100;
+const MAX_TIMELINE_ITEMS = 50;
 const MAX_ACTIVITY_ITEMS = 30;
+const MAX_REQUEST_CHARS = 65536;
 const MAX_GROUNDING_ITEMS = 12;
 const MAX_ACTION_ITEMS = 4;
 
@@ -92,6 +103,83 @@ function sanitizeActivity(event = {}) {
   };
 }
 
+export function validateGatewayRequest(payload) {
+  if (!isPlainObject(payload)) return fail("request must be an object");
+  if (!hasOnlyKeys(payload, ALLOWED_REQUEST_KEYS)) return fail("request contains unknown top-level fields");
+  for (const key of ALLOWED_REQUEST_KEYS) {
+    if (!(key in payload)) return fail("request is missing required field: " + key);
+  }
+
+  if (payload.version !== TWIN_GATEWAY_VERSION) return fail("request version must be 0.5");
+  if (typeof payload.question !== "string" || !payload.question.trim() || payload.question.length > MAX_QUESTION_LENGTH) {
+    return fail("request question is invalid");
+  }
+
+  if (!isPlainObject(payload.profile) || !hasOnlyKeys(payload.profile, ALLOWED_PROFILE_KEYS)) {
+    return fail("request profile is invalid");
+  }
+  if (!Array.isArray(payload.profile.projects) || payload.profile.projects.length > MAX_PROJECT_ITEMS) {
+    return fail("request projects exceed the contract limit");
+  }
+  if (!Array.isArray(payload.profile.relations) || payload.profile.relations.length > MAX_RELATION_ITEMS) {
+    return fail("request relations exceed the contract limit");
+  }
+  if (!Array.isArray(payload.profile.timeline) || payload.profile.timeline.length > MAX_TIMELINE_ITEMS) {
+    return fail("request timeline exceeds the contract limit");
+  }
+
+  for (const project of payload.profile.projects) {
+    if (!isPlainObject(project) || !hasOnlyKeys(project, ALLOWED_PROJECT_KEYS)) return fail("request project is invalid");
+    if (typeof project.id !== "string" || !project.id || typeof project.name !== "string" || !project.name) {
+      return fail("request project identity is invalid");
+    }
+    if (![project.category, project.status, project.short, project.url].every((value) => typeof value === "string")) {
+      return fail("request project fields are invalid");
+    }
+    if (!Array.isArray(project.tags) || project.tags.length > 12 || !project.tags.every((tag) => typeof tag === "string")) {
+      return fail("request project tags are invalid");
+    }
+  }
+
+  for (const relation of payload.profile.relations) {
+    if (!isPlainObject(relation) || !hasOnlyKeys(relation, ALLOWED_RELATION_KEYS)) return fail("request relation is invalid");
+    if (![relation.source, relation.target, relation.label].every((value) => typeof value === "string" && value)) {
+      return fail("request relation fields are invalid");
+    }
+    if (!Number.isFinite(relation.strength) || relation.strength < 0 || relation.strength > 1) {
+      return fail("request relation strength is invalid");
+    }
+  }
+
+  for (const item of payload.profile.timeline) {
+    if (!isPlainObject(item) || !hasOnlyKeys(item, ALLOWED_TIMELINE_KEYS)) return fail("request timeline item is invalid");
+    if (![item.phase, item.title, item.summary].every((value) => typeof value === "string" && value)) {
+      return fail("request timeline fields are invalid");
+    }
+  }
+
+  if (!Array.isArray(payload.activity) || payload.activity.length > MAX_ACTIVITY_ITEMS) {
+    return fail("request activity exceeds the contract limit");
+  }
+  for (const event of payload.activity) {
+    if (!isPlainObject(event) || !hasOnlyKeys(event, ALLOWED_ACTIVITY_KEYS)) return fail("request activity item is invalid");
+    if (![event.id, event.type, event.repo, event.createdAt].every((value) => typeof value === "string")) {
+      return fail("request activity fields are invalid");
+    }
+    if (!Number.isFinite(event.commits) || event.commits < 0) return fail("request activity commits are invalid");
+  }
+
+  if (!isPlainObject(payload.client) || !hasOnlyKeys(payload.client, ALLOWED_CLIENT_KEYS)) {
+    return fail("request client is invalid");
+  }
+  if (typeof payload.client.profileVersion !== "string" || !payload.client.profileVersion.trim()) {
+    return fail("request client profileVersion is invalid");
+  }
+
+  if (JSON.stringify(payload).length > MAX_REQUEST_CHARS) return fail("request exceeds the contract size limit");
+  return { ok: true };
+}
+
 export function buildGatewayRequest(profile, rawQuestion, activity = []) {
   const question = String(rawQuestion || "").trim();
   if (!question) throw new TypeError("question is required");
@@ -101,19 +189,23 @@ export function buildGatewayRequest(profile, rawQuestion, activity = []) {
   const configValidation = validateGatewayConfig(config);
   if (!configValidation.ok) throw new TypeError(configValidation.error);
 
-  return {
+  const payload = {
     version: TWIN_GATEWAY_VERSION,
     question,
     profile: {
-      projects: (profile.projects || []).map(sanitizeProject),
-      relations: (profile.relations || []).map(sanitizeRelation),
-      timeline: (profile.timeline || []).map(sanitizeTimeline),
+      projects: (profile.projects || []).slice(0, MAX_PROJECT_ITEMS).map(sanitizeProject),
+      relations: (profile.relations || []).slice(0, MAX_RELATION_ITEMS).map(sanitizeRelation),
+      timeline: (profile.timeline || []).slice(0, MAX_TIMELINE_ITEMS).map(sanitizeTimeline),
     },
     activity: (Array.isArray(activity) ? activity : []).slice(0, MAX_ACTIVITY_ITEMS).map(sanitizeActivity),
     client: {
       profileVersion: config.clientProfileVersion,
     },
   };
+
+  const requestValidation = validateGatewayRequest(payload);
+  if (!requestValidation.ok) throw new TypeError(requestValidation.error);
+  return payload;
 }
 
 function normalizeAction(action, profile) {
