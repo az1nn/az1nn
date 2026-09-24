@@ -4,10 +4,10 @@ APP:
 Az1nn GitHub profile / interactive Three.js profile
 
 WORKSTREAM:
-Profile V0.5 — Remote Twin Gateway / Phase A contract
+Profile V0.5 — Remote Twin Gateway
 
 STATE:
-V0.5 specification is merged. Preview runtime packaging hotfix PR #14 is merged. Phase A implementation is open as PR #15.
+Phase A contract implementation is merged to main. Gateway remains disabled by default and no provider/hosting decision has been made.
 
 MODE:
 WATCH
@@ -19,46 +19,47 @@ CANONICAL SOURCE:
 
 CURRENT VERSION / HEAD:
 - released profile: 0.4.0
-- main baseline for Phase A: a1748f377459ee8d62c45d0e2e00e94cee2a81d5
-- resolve PR #15 latest HEAD from GitHub before acting
+- Phase A feature merge: b0c5ccac5e1c372574922bde8e9acbce213d09f1
+- main also contains the post-merge documentation status update; resolve exact current HEAD from GitHub before acting
 
 BASE:
 main
 
 BRANCH / ENV:
-feat/profile-v0.5-phase-a-contract
+main / GitHub Pages production
 
 PR / MR / TASK:
-PR #15 — feat: profile v0.5 Phase A gateway contract
+- PR #14 merged — preview runtime bundle fix
+- PR #15 merged — V0.5 Phase A gateway contract
 
 SPEC / ADR:
 docs/specs/profile-v0.5-remote-twin-gateway.md
-Status: ACCEPTED — PHASE A IN PROGRESS
-No provider/hosting ADR exists or is authorized yet.
+Status: ACCEPTED — PHASE A MERGED
+No provider/hosting ADR exists or is authorized.
 
 DONE:
-- reconciled PR #13 as merged and its preview build as successful;
-- verified main matched PR #13 merge commit before advancing;
-- found preview deployment staging omitted imported Twin runtime files;
-- merged PR #14 to make preview staging copy the complete runtime and optional future gateway module;
-- added twin.gateway.mjs with versioned request construction, response validation and action allowlisting;
-- added deterministic local fallback for disabled/network/HTTP/JSON/schema failure paths;
-- kept gateway disabled with endpoint null;
-- added scripts/validate-gateway.mjs;
-- wired gateway validation into preview and Pages builds;
-- included gateway module in future release packaging;
-- kept PROFILE_VERSION at 0.4.0.
+- merged V0.5 provider-agnostic specification;
+- fixed preview staging so imported profile/Twin modules are published;
+- implemented versioned 0.5 request contract and explicit request schema validation;
+- implemented response schema validation and action allowlisting;
+- normalized remote actions into the existing read-only client action model;
+- implemented deterministic local fallback for disabled, network, HTTP, JSON and schema failures;
+- gateway remains disabled and endpoint remains null;
+- added validate-gateway.mjs;
+- existing validate-profile and validate-twin remained green;
+- latest PR #15 HEAD 30ff7bc62505cb5c052c150c32b79756e811e41a passed Build profile preview;
+- preview deployment published candidate 30ff7bc62505 for PR #15;
+- PR #15 merged as b0c5ccac5e1c372574922bde8e9acbce213d09f1;
+- PROFILE_VERSION remains 0.4.0.
 
 VERIFY:
-- read PR #15 latest HEAD, mergeability and changed files;
-- consume Build profile preview for the latest HEAD;
-- all three validators must pass: validate-profile, validate-twin, validate-gateway;
-- verify preview deployment produced a candidate for PR #15 using the fixed staging workflow;
-- confirm malformed/unsupported remote actions cannot escape validation;
-- confirm gateway-disabled mode performs no network request and uses local grounding.
+- before advancing, verify current main HEAD and production Pages deployment state;
+- verify main still contains twin.gateway.mjs and gateway.enabled=false / endpoint=null;
+- verify PROFILE_VERSION remains 0.4.0 unless a dedicated release workstream has started;
+- do not infer a successful production Pages deploy solely from the successful PR preview.
 
 GATES:
-Still unresolved and must not be selected in Phase A:
+Unresolved human decisions before Phase B:
 - gateway hosting/runtime;
 - model provider/model class;
 - budget/rate policy;
@@ -66,25 +67,27 @@ Still unresolved and must not be selected in Phase A:
 - production remote-mode enablement.
 
 BLOCKERS:
-No product blocker known. CI/preview state for PR #15 must be read from GitHub.
+No Phase A implementation blocker remains. Production Pages result after the merge must be re-read when a reliable Actions/deployment signal is available.
 
 INVARIANTS:
 - REAL STATE > HANDOFF > MEMORY > CHAT;
-- static GitHub Pages remains functional without the gateway;
-- gateway disabled by default in Phase A;
-- endpoint remains null in Phase A;
-- no browser-side model credentials;
-- public/profile-safe context only;
-- remote actions are validated and restricted to focus-project, open-repo and show-view;
-- invalid remote output fails closed to the local V0.4 Twin;
+- static profile remains fully usable without a gateway;
+- gateway disabled by default;
+- endpoint null until an explicit hosting decision;
+- no browser-side provider credentials;
+- public/profile-safe request context only;
+- unknown request fields rejected by contract validation;
+- remote output treated as untrusted;
+- actions restricted to focus-project, open-repo and show-view;
+- invalid remote output fails closed to local Twin;
+- no provider-specific work before the human decision gates;
 - PROFILE_VERSION changes only in a dedicated release PR after feature validation.
 
 NEXT:
-1. Verify PR #15 latest HEAD and workflow runs.
-2. Fix any validation/build failure on the same branch.
-3. Verify preview deployment after the build succeeds.
-4. If automated checks pass, stop at any explicit human smoke/decision gate before provider-specific Phase B work.
-5. Do not choose hosting/provider or enable production remote mode in this workstream.
+1. VERIFY-FIRST current main + Pages deployment.
+2. If production is healthy, classify Phase A complete.
+3. Do not start Phase B until the required hosting/provider/budget/telemetry decisions are explicitly made.
+4. A dedicated profile release/version bump remains separate from Phase A.
 
 VERIFY-FIRST:
-Read PR #15 metadata, latest head SHA, workflow runs/jobs and preview result. Do not trust this handoff if GitHub differs.
+Read main HEAD, PR #15 merged state, Pages/deployment status if available, PROFILE_VERSION, profile.config.js gateway config and this handoff. Real GitHub state overrides this file.
