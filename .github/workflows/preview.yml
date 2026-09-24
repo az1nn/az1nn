@@ -11,6 +11,7 @@ on:
       - twin.conversation.css
       - twin.conversation.js
       - twin.model.mjs
+      - twin.gateway.mjs
       - README.md
       - scripts/**
       - docs/**
@@ -43,14 +44,17 @@ jobs:
           node --input-type=module --check < profile.config.js
           node --input-type=module --check < twin.conversation.js
           node --check twin.model.mjs
+          node --check twin.gateway.mjs
           node scripts/validate-profile.mjs
           node scripts/validate-twin.mjs
+          node scripts/validate-gateway.mjs
           test -s index.html
           test -s styles.css
           test -s profile.config.js
           test -s twin.conversation.css
           test -s twin.conversation.js
           test -s twin.model.mjs
+          test -s twin.gateway.mjs
 
       - name: Stage preview candidate
         shell: bash
@@ -58,7 +62,7 @@ jobs:
           set -euo pipefail
 
           mkdir -p artifact/profile
-          cp index.html styles.css app.js profile.config.js twin.conversation.css twin.conversation.js twin.model.mjs artifact/profile/
+          cp index.html styles.css app.js profile.config.js twin.conversation.css twin.conversation.js twin.model.mjs twin.gateway.mjs artifact/profile/
 
           if [ -d assets ]; then
             cp -R assets artifact/profile/assets
