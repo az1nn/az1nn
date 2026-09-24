@@ -4,6 +4,7 @@ import {
   buildGatewayRequest,
   resolveTwinTurn,
   validateGatewayConfig,
+  validateGatewayRequest,
   validateGatewayResponse,
 } from "../twin.gateway.mjs";
 
@@ -27,7 +28,19 @@ check(
   "gateway request should contain only versioned contract fields",
 );
 check(request.version === "0.5", "gateway request should use contract version 0.5");
+check(validateGatewayRequest(request).ok, "constructed request should pass gateway-side schema validation");
 check(request.activity[0]?.secret === undefined, "activity context should be sanitized");
+
+const requestWithUnknownField = validateGatewayRequest({ ...request, debug: true });
+check(!requestWithUnknownField.ok, "unknown request top-level fields must be rejected");
+
+let oversizedQuestionRejected = false;
+try {
+  buildGatewayRequest(PROFILE, "x".repeat(281));
+} catch {
+  oversizedQuestionRejected = true;
+}
+check(oversizedQuestionRejected, "questions above the contract limit must be rejected");
 check(request.client.profileVersion === "0.4.0", "Phase A should identify the current released client version");
 
 const validPayload = {
