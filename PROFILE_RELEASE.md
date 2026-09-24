@@ -18,6 +18,11 @@ Profile preview inputs:
 index.html
 styles.css
 app.js
+profile.config.js
+twin.conversation.css
+twin.conversation.js
+twin.model.mjs
+twin.gateway.mjs
 assets/**
 README.md   # triggers a preview when profile copy changes
 ```
@@ -70,6 +75,11 @@ README.md
 index.html
 styles.css
 app.js
+profile.config.js
+twin.conversation.css
+twin.conversation.js
+twin.model.mjs
+twin.gateway.mjs
 assets/
 PROFILE_VERSION
 ```
