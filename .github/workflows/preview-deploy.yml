@@ -73,7 +73,23 @@ jobs:
           set -euo pipefail
 
           mkdir -p dist
-          cp production/index.html production/styles.css production/app.js dist/
+
+          runtime_files=(
+            index.html
+            styles.css
+            app.js
+            profile.config.js
+            twin.conversation.css
+            twin.conversation.js
+            twin.model.mjs
+            twin.gateway.mjs
+          )
+
+          for file in "${runtime_files[@]}"; do
+            if [ -f "production/$file" ]; then
+              cp "production/$file" dist/
+            fi
+          done
 
           if [ -d production/assets ]; then
             cp -R production/assets dist/assets
@@ -87,7 +103,12 @@ jobs:
 
           preview_dir="dist/previews/pr-$PR_NUMBER"
           mkdir -p "$preview_dir"
-          cp candidate/profile/index.html candidate/profile/styles.css candidate/profile/app.js "$preview_dir/"
+
+          for file in "${runtime_files[@]}"; do
+            if [ -f "candidate/profile/$file" ]; then
+              cp "candidate/profile/$file" "$preview_dir/"
+            fi
+          done
 
           if [ -d candidate/profile/assets ]; then
             cp -R candidate/profile/assets "$preview_dir/assets"
