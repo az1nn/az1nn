@@ -52,6 +52,15 @@ The conversational Twin remains intentionally local-first and read-only. It does
 | [PG Researcher](https://github.com/az1nn/pg-researcher) | Research workflows, structured knowledge and AI-assisted publishing |
 | [Zapizapi](https://github.com/az1nn/zapizapi) | Message intake, automation and AI-assisted triage |
 
+## Agent toolkit
+
+Repository-canonical continuation and specialist knowledge live under [`.github/skills/`](./.github/skills/README.md).
+
+- `Siga` — verify-first project continuation.
+- `Godot [command]` — Godot architecture, diagnostics, validation, export, profiling and learning.
+- [Godot field commands](./docs/godot/COMMANDS.md)
+- [Godot engineering knowledge](./docs/godot/KNOWLEDGE.md)
+
 ## Commit topology
 
 <div align="center">
