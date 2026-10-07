@@ -399,10 +399,46 @@ runtime
 > chat/model memory
 ```
 
-## 23. Open structural decision
+## 23. Orchestration multiplicity
 
-Still under grilling:
+There is one orchestration authority/protocol, not one mandatory running process.
 
-- whether “one Orchestrator” means a singleton running instance or one canonical orchestration authority/protocol that may have multiple concurrent instances over shared canonical state.
+Multiple Orchestrator instances may execute concurrently, but every instance must operate over the same canonical project truth and shared ownership model.
 
-Do not silently resolve this until approved.
+```text
+ONE ORCHESTRATION PROTOCOL
+ONE CANONICAL STATE
+ONE CLAIM REGISTRY
+MANY EXECUTION INSTANCES
+```
+
+Each active instance must have an explicit execution identity and enough state to reconcile independently:
+
+```yaml
+execution_id:
+scope:
+claims: []
+branch:
+worktree:
+task:
+spec:
+state:
+last_reconcile:
+```
+
+No instance may assume it is the only active coordinator.
+
+Before mutation, an instance must reconcile canonical state and acquire the required logical claims.
+
+## 24. Derived orchestration invariants
+
+- canonical project state is shared across Orchestrator instances;
+- a claim belongs to an execution, not generically to a skill;
+- no hidden chat/session state grants operational authority;
+- RESUME always revalidates branch/head, claims, spec, evidence and gates;
+- WATCH is non-mutating by default and must be reclassified before mutation;
+- ADVANCE requires eligible work with no unresolved dependency, conflict or gate;
+- BLOCKED must name its cause;
+- HUMAN_GATE must name the exact missing human decision;
+- silence, timeout or missing response never imply ACCEPT;
+- rejected candidates remain traceable but cannot become baseline automatically.
