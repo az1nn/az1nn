@@ -84,6 +84,19 @@ HUMAN_GATE
 
 Additional explicit states defined by the constitution include `SPEC_GAP`, `DOMAIN_CONFLICT`, `EXECUTION_LOOP`, `INSUFFICIENT_EVIDENCE`, `CRITICAL_FINDING` and ownership lifecycle states.
 
+## Orchestration model
+
+`ORCHESTRATOR` is a single authority/protocol, not a singleton process.
+
+```text
+ONE ORCHESTRATION PROTOCOL
+ONE CANONICAL STATE
+ONE CLAIM REGISTRY
+MANY EXECUTION INSTANCES
+```
+
+Parallel sessions are allowed only when each execution has an explicit identity, reconciles shared state and acquires logical claims before mutation.
+
 ## Relationship to the existing Godot command
 
 The repository already contains `.github/skills/godot/SKILL.md`, an engine-focused Godot engineering command.
