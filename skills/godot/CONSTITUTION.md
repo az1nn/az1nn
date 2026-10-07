@@ -442,3 +442,61 @@ Before mutation, an instance must reconcile canonical state and acquire the requ
 - HUMAN_GATE must name the exact missing human decision;
 - silence, timeout or missing response never imply ACCEPT;
 - rejected candidates remain traceable but cannot become baseline automatically.
+
+## 25. Constitutional governance
+
+The Constitution is above every skill in the tree.
+
+No skill may grant itself new authority, remove a restriction on itself, redefine ownership boundaries or alter acceptance/gate semantics in order to unblock its own execution.
+
+A change is constitutional when it changes who may:
+
+- decide;
+- block;
+- accept/reject;
+- execute;
+- escalate;
+- own a domain;
+- own a state transition;
+- alter topology;
+- alter concurrency/ownership semantics;
+- alter human-gate semantics;
+- alter cross-skill contracts;
+- alter critical invariants.
+
+Constitutional changes require explicit HUMAN approval.
+
+```text
+PROPOSAL
+  -> CLASSIFY CHANGE
+  -> CONSTITUTIONAL
+  -> HUMAN_GATE
+  -> APPROVE | REJECT
+```
+
+Skills may propose constitutional changes but may not self-ratify them.
+
+## 26. Operational refinement
+
+A non-constitutional refinement may be applied autonomously when it preserves all existing authority and semantics.
+
+Examples:
+
+- clarify wording;
+- improve instructions;
+- add equivalent diagnostics;
+- improve internal workflow;
+- correct examples;
+- optimize deterministic validation;
+- add implementation guidance that does not change authority.
+
+Classification test:
+
+```text
+Does this change who can decide, block, accept, execute or escalate?
+
+YES -> CONSTITUTIONAL -> HUMAN_GATE
+NO  -> may be operational refinement
+```
+
+When classification is ambiguous, treat it as constitutional until resolved.
