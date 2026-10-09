@@ -18,6 +18,8 @@ These are MANUAL acceptance exercises for a live agent using the named skill and
 | S12 | prior G1..G10 fully decided | resume first unresolved question, don't repeat previous | decision ledger |
 | S13 | deterministic decisions sufficiently evidenced | batch AUTO_RESOLVED, report rationale without serial approvals | no unauthorized gate |
 | S14 | human answer contains contradictory Outro vs choice | record DECISION_CONFLICT and ask only if ambiguity is material | no silent override |
+| S15 | interactive host | render non-exclusive choices and visible multiline Outro textarea in same question | UI acceptance, exact payload |
+| S16 | text-only host | accept Outro-only and A+C+Outro in text without claiming UI widgets | ledger/manual fallback |
 
 Recommended E2E smoke sequence:
 

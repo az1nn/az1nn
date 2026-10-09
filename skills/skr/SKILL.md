@@ -66,6 +66,13 @@ Outro: [campo de texto livre — pode combinar A/B/C/... e descrever ajustes]
 
 The Outro answer is fully valid by itself; it does NOT invalidate other options. Accept hybrid answers (e.g. A + C + Outro: ...). Store selected options and free-text additions separately; combine compatible constraints and preserve dissent/ambiguity. If options conflict, reconcile deterministically when safe; escalate only genuine human decisions. Never drop free text because the answer also selected a listed choice.
 
+#### Input UI adapter
+
+- When a host supports interactive inputs, render listed alternatives as independent checkboxes/multi-select plus a visible **Outro multiline text input/textarea** in the same question; submit selected choices and exact free text as one payload. Never use exclusive radio-only controls that block mixed answers.
+- Outro alone, a listed choice alone, or A + C + Outro are all valid. Input is valid if at least one listed option is chosen OR nonblank Outro is provided. An unused Outro field must not invalidate listed choices; typing in Outro must not require checking an extra toggle.
+- Preserve verbatim Outro separately from normalized meaning. Handle contradictory mixes after submission as decision conflicts, not as an invalid question. Never discard free text.
+- On hosts without interactive controls, use text fallback `Outro: <texto livre>` and accept free-text-only and hybrid answers. Never claim a native field exists where one was not displayed.
+
 Questions are not automatically one-per-turn:
 - Inspect already-approved G1..Gn and do not ask them again.
 - Once information is sufficient, take safe, justified operational decisions in a BATCH; do not stop to ask approval after every item.

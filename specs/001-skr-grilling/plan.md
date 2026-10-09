@@ -17,7 +17,7 @@ SKR <skill>
  -> SIGA state/ownership reconciliation
  -> read repo tree + focused skill/adjacent contracts
  -> audit happy path + negative paths
- -> targeted grilling (A/B/C/D + Outro)
+ -> targeted grilling (multi-select + Outro textarea when UI supports it; text fallback otherwise)
  -> grouped justified decisions | genuine HUMAN_GATE
  -> Spec Kit spec/plan/tasks/decision ledger
  -> existing roadmap sync (preserve locks/dependencies)

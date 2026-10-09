@@ -31,7 +31,7 @@ US6: A later session resumes from the real project/head and ledger rather than r
 |---|---|---|
 | FR-01 Trigger/routing | SKR + valid name scopes to verified repository skill, including parent/sibling edges; missing name/path is explicit | T01,T02 |
 | FR-02 Tree audit | Covers trigger, authority, dependencies, input/output, state, failure, verification/test and handoff; positive & negative path | T03 |
-| FR-03 Outro | Every MC question has Outro free text; Outro-only and A+C+Outro remain valid, distinct and persisted | T04 |
+| FR-03 Outro | Every MC question has Outro; use a real multiline free-text input and independent choices when the host supports it, with text fallback otherwise. Outro-only and A+C+Outro remain valid, distinct and persisted | T04 |
 | FR-04 Batch autonomy | Non-constitutional evidence-based decisions batch without repeated human interruptions; retain rationale/status | T05 |
 | FR-05 Human gates | Subjective/constitutional/irreversible/explicit gates never silently APPROVED; preserve REJECT | T06 |
 | FR-06 Spec Kit | Produce linked spec, plan, tasks, ledger; don't fake CLI execution or a missing constitution | T07 |

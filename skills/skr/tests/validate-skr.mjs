@@ -47,7 +47,7 @@ check('SKR only one canonical definition', () => {
   assert.ok(!existsSync(resolve(root, '.github/skills/skr/SKILL.md')));
 });
 check('invocation and tree audit', () => required(skill, ['SKR <NOME_DA_SKILL>', 'AUDIT THE WHOLE TREE', 'Invocation', 'Authority', 'Verification', 'Delivery']));
-check('Outro must be available and can mix choices', () => required(skill, ['Outro:', 'A + C + Outro:', 'valid by itself', 'selected options and free-text additions separately']));
+check('Outro must be available and can mix choices', () => required(skill, ['Outro:', 'A + C + Outro:', 'valid by itself', 'selected options and free-text additions separately', 'Input UI adapter', 'text input/textarea', 'checkboxes/multi-select']));
 check('batch autonomy and human authority', () => required(skill, ['BATCH', 'AUTO_RESOLVED', 'HUMAN_GATE', 'cannot self-ratify', 'Never drop free text']));
 check('Spec Kit and missing roadmap safety', () => required(skill, ['SPEC KIT IS MANDATORY', 'spec.md', 'plan.md', 'tasks.md', 'decision ledger', 'EXISTING roadmap', 'ROADMAP_MISSING']));
 check('verification and provenance', () => required(skill, ['exact-HEAD CI', 'visual evidence', 'NOT_RUN', 'STALE', 'INSUFFICIENT_EVIDENCE', 'REJECT']));
@@ -64,6 +64,6 @@ check('feature registered in roadmap', () => {
 });
 check('plan distinguishes manual E2E from static test', () => required(plan, ['No Godot runtime', 'real prompt execution', 'independent branch']));
 check('all negative/positive manual scenarios specified', () => {
-  for (let i=1;i<=14;i++) assert.ok(scenarios.includes('S' + String(i).padStart(2,'0')), 'Missing scenario S' + i);
+  for (let i=1;i<=16;i++) assert.ok(scenarios.includes('S' + String(i).padStart(2,'0')), 'Missing scenario S' + i);
 });
 process.stdout.write('Contract checks: ' + total + '; failures: ' + (process.exitCode ?? 0) + '\n');
