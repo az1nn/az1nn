@@ -1,5 +1,5 @@
 # Feature 002 — SIGA flow verification and scope arbitration (Spec Kit)
-Status: PROPOSED / HUMAN_GATE G1 OPEN
+Status: PROPOSED / G1 D APPROVED; implementation and runtime validation pending
 Source: `SKR Siga` audit, 2026-10-09
 Canonical target: `.github/skills/siga/SKILL.md` in `az1nn/az1nn`
 Relationship: discovery record in `specs/001-skr-grilling/evidence/skr-siga-2026-10-09.md`. This specification does not alter existing SIGA.
@@ -15,7 +15,7 @@ Priority: P1 AFTER P0 SKR validation; keep PR #18 independent.
 |---|---|---|---|
 | FR-001 | Canonical source | Exactly one SIGA SKILL.md, root routing resolves it and no alternate definition | ST01/CT01 |
 | FR-002 | State classification | Deterministic RESUME, WATCH or ADVANCE for adequate evidence; no duplicate workstreams | ST02/CT02–CT04 |
-| FR-003 | Default target scope | When target is ambiguous, policy follows human-approved G1; no mutation based on guessed scope | ST03/CT05 |
+| FR-003 | Default target scope | Select automatically only when exactly one eligible workstream is unambiguous and verified; otherwise ask for scope without mutation (G1 D approved) | ST03/CT05 |
 | FR-004 | Conflict safety | Stale HEAD or overlapping ownership refuses unsafe writes, preserves negative evidence | ST04/CT06–CT07 |
 | FR-005 | Human gates | Explicit architectural, visual, irreversible, cost or merge gates stay unresolved without owner approval | ST05/CT08 |
 | FR-006 | Verification truth | Check names, head SHA, exact evidence and NOT_RUN/STALE/FAIL distinctions; never false PASS | ST06/CT09 |
@@ -28,3 +28,6 @@ Multiple active repositories; missing target; moving branch head; stale PR CI; i
 
 ## Non-goals
 Changing SIGA's constitution without explicit approval; merging PR #18/#19; declaring semantic/LLM tests PASS from text-only static checks; deploying a new runtime.
+
+## Approved G1 decision
+G1 D was explicitly approved on 2026-10-09. Multiple plausible targets or no verified target => stop scope-dependent mutations and ask one clarifying question. A unique target must be revalidated before executing. This is not approval to merge or to bypass any domain/human gate.
