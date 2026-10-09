@@ -1,0 +1,35 @@
+name: SKR Contract
+
+on:
+  pull_request:
+    paths:
+      - 'skills/skr/**'
+      - 'skills/ROADMAP.md'
+      - 'specs/001-skr-grilling/**'
+      - 'AGENTS.md'
+      - '.github/skills/README.md'
+      - '.github/workflows/skr-contract.yml'
+  push:
+    branches:
+      - main
+      - 'feat/001-skr-standardized-grilling'
+    paths:
+      - 'skills/skr/**'
+      - 'skills/ROADMAP.md'
+      - 'specs/001-skr-grilling/**'
+      - 'AGENTS.md'
+      - '.github/skills/README.md'
+      - '.github/workflows/skr-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify SKR skill contract and Spec Kit traceability
+        run: node skills/skr/tests/validate-skr.mjs
