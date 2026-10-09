@@ -13,7 +13,12 @@ const requiredFiles = [
   'specs/001-skr-grilling/plan.md',
   'specs/001-skr-grilling/tasks.md',
   'specs/001-skr-grilling/decisions.md',
-  'skills/skr/tests/scenarios.md'
+  'skills/skr/tests/scenarios.md',
+  'specs/001-skr-grilling/evidence/skr-siga-2026-10-09.md',
+  'specs/002-siga-verification/spec.md',
+  'specs/002-siga-verification/plan.md',
+  'specs/002-siga-verification/tasks.md',
+  'specs/002-siga-verification/decisions.md'
 ];
 
 let total = 0;
@@ -65,5 +70,20 @@ check('feature registered in roadmap', () => {
 check('plan distinguishes manual E2E from static test', () => required(plan, ['No Godot runtime', 'real prompt execution', 'independent branch']));
 check('all negative/positive manual scenarios specified', () => {
   for (let i=1;i<=16;i++) assert.ok(scenarios.includes('S' + String(i).padStart(2,'0')), 'Missing scenario S' + i);
+});
+check('live SIGA audit records evidence provenance', () => {
+  const evidence = read('specs/001-skr-grilling/evidence/skr-siga-2026-10-09.md');
+  required(evidence, ['S01', 'LIVE positive', 'NOT_RUN', 'cf2e85f', '9ddd24b', 'PR #18']);
+});
+check('SIGA verification spec and roadmap traceability', () => {
+  const sigaSpec = read('specs/002-siga-verification/spec.md');
+  const sigaPlan = read('specs/002-siga-verification/plan.md');
+  const sigaTasks = read('specs/002-siga-verification/tasks.md');
+  const sigaDecisions = read('specs/002-siga-verification/decisions.md');
+  for (let i = 1; i <= 9; i++) assert.ok(sigaSpec.includes('FR-' + String(i).padStart(3, '0')));
+  for (let i = 1; i <= 9; i++) assert.ok(sigaTasks.includes('ST' + String(i).padStart(2, '0')));
+  required(sigaPlan, ['human', 'Spec Kit', 'RESUME', 'WATCH', 'ADVANCE']);
+  required(sigaDecisions, ['SIGA-G1', 'HUMAN_GATE', 'AUTO_RESOLVED']);
+  required(roadmap, ['002-siga-verification/spec.md', 'P1 after SKR P0', 'G1 HUMAN_GATE']);
 });
 process.stdout.write('Contract checks: ' + total + '; failures: ' + (process.exitCode ?? 0) + '\n');
