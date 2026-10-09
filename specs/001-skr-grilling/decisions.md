@@ -18,3 +18,9 @@ Entries reflect explicit user intent, not synthetic G1–G25 votes. Any later gr
 |---|---|---|---|---|---|---|---|---|---|---|
 
 Statuses: PROPOSED, AUTO_RESOLVED, APPROVED, REJECTED, OPEN, HUMAN_GATE, BLOCKED. Never infer approval from silence. Append new entries, don't overwrite decisions without an explicit superseding record.
+
+
+## SKR live audit 2026-10-09
+
+- SKR-E01: actual `SKR SIGA` invocation; `S01` discovery passed by connected GitHub inspection, *not* overall behavioral E2E. Evidence: `specs/001-skr-grilling/evidence/skr-siga-2026-10-09.md`.
+- New SIGA-specific proposals and pending human `SIGA-G1` live at `specs/002-siga-verification/decisions.md` and do not amend prior G1..Gn or constitutional rules.

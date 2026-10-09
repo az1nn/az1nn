@@ -20,6 +20,8 @@ Status legend: [x] implementation present in proposed branch; [ ] pending verifi
 - [x] T11 Add path-scoped GitHub Actions validation workflow.
 - [ ] T12 Confirm CI passes for PR exact HEAD (requires observed job output).
 - [ ] T13 Run real SKR + named skill exercise through the connected repository; persist actual outcomes (cannot be asserted by static validator).
+  - [x] T13a First live `SKR SIGA` discovery, tree audit and partial negative review persisted in `evidence/skr-siga-2026-10-09.md` (S01 discovery PASS only).
+  - [ ] T13b Execute interactive Outro/hybrid, true negative concurrency, decision-ledger roundtrip and resumed-session behavior; full E2E remains NOT_RUN.
 - [ ] T14 Review/approve PR and merge under repository gates; never assume approval from drafting this spec.
 
 Dependencies: T12 after T10/T11; T13 after routing; T14 after T12/T13 and review policy.
