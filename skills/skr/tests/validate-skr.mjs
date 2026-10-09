@@ -58,7 +58,10 @@ check('feature spec has 10 linked FRs', () => {
   for (let i=1;i<=11;i++) assert.ok(tasks.includes('T' + String(i).padStart(2,'0')), 'Missing T ' + i);
 });
 check('decisions and roadmap are traceable', () => required(decisions, ['SKR-D01', 'SKR-D07', 'Outr' + 'o verbatim', 'HUMAN_GATE']));
-check('feature registered in roadmap', () => required(roadmap, ['001-skr-grilling/spec.md', 'PR #18', 'existing roadmap']));
+check('feature registered in roadmap', () => {
+  required(roadmap, ['001-skr-grilling/spec.md', 'PR #18']);
+  assert.match(roadmap, /existing roadmap/i, 'Missing existing roadmap policy');
+});
 check('plan distinguishes manual E2E from static test', () => required(plan, ['No Godot runtime', 'real prompt execution', 'independent branch']));
 check('all negative/positive manual scenarios specified', () => {
   for (let i=1;i<=14;i++) assert.ok(scenarios.includes('S' + String(i).padStart(2,'0')), 'Missing scenario S' + i);
