@@ -6,7 +6,7 @@
 - [x] CG-003: Define proposed DecisionRecord and optional handoff extension.
 - [x] CG-004: Document authority, privacy, concurrency and human gates.
 - [x] CG-005: Define acceptance and negative test scenarios.
-- [ ] CG-006: Validate PR exact-head and report CI/status evidence.
+- [x] CG-006: Inspect exact-head GitHub checks/status and record evidence (availability verified, **not** a CI pass).
 - [ ] CG-007: Obtain documentary review and approve next phase explicitly.
 
 ## M1+ — NOT AUTHORIZED
@@ -23,3 +23,11 @@
 - PR #18's portable tree is not merged; Guardian must work without assuming it exists on main.
 - Observatory is independent PoC only.
 - No M1 task may start based solely on this ledger.
+
+## CG-006 — Evidence register (2026-10-29)
+- Source revision inspected: `c1094596d5d79e3f411c371924be3bd460ac68d7` (PR #20 before this documentation update).
+- [GitHub Check Runs](https://github.com/az1nn/az1nn/commit/c1094596d5d79e3f411c371924be3bd460ac68d7/checks): `Vercel Preview Comments` = SUCCESS (completed).
+- [GitHub combined status](https://api.github.com/repos/az1nn/az1nn/commits/c1094596d5d79e3f411c371924be3bd460ac68d7/status): `Vercel` = SUCCESS (deployment completed).
+- GitHub Actions PR-triggered workflow runs returned **none** at this SHA (NOT_RUN / not evidence of successful validation).
+- Neither status validates Spec Kit, JSON Schema contracts, or runtime behavior. No approval, merge, or M1 authorization follows.
+- Since this record itself changes HEAD, reconcile and re-inspect the **new exact HEAD** after committing. Record its status in the PR discussion without changing HEAD again.
