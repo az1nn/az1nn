@@ -54,7 +54,7 @@ check("Constitution preserves gates and requires independent ratification", () =
 });
 check("Audited human approval does not authorize merge", () => {
   assert.ok(audit.includes("M04-C01 is **RESOLVED FOR DOCUMENTARY CONTRACT**"));
-  assert.ok(audit.includes("other §25 authority/gate changes"));
+  assert.ok(audit.includes("other authority changes, or merge permissions"));
   assert.ok(audit.includes("MERGE NO-GO"));
 });
 process.stdout.write(`Contract checks: ${checks}; failures: 0\n`);
