@@ -20,7 +20,7 @@ Status: **NOT RUN / IMPLEMENTATION NOT AUTHORIZED**. Documentary review is not r
 | CG-T14 | Markdown-only host | All signal/handoff details remain accessible without Intelligent UI |
 | CG-T15 | Scope excludes API/daemon | No fabricated live monitoring, autonomous capture or provider telemetry |
 | CG-T16 | Unified SIGA design | No separately invocable Context Guardian skill/agent/authority; diagnostics are SIGA-internal only |
-| CG-T17 | CG-007 decision integrity | O01–O05 marked approved for documentation; ADR-CG-002 approved documentarily; ADR-CG-001 revised but pending reapproval |
+| CG-T17 | CG-007/CG-008 decision integrity | O01–O05 approved for documentation; ADR-CG-001 and ADR-CG-002 published documentarily through PR #21; original pending-review record preserved as historical evidence, with **no constitutional ratification** |
 | CG-T18 | Existing gate preservation | No new blocking authority or constitutional approval implied by CG-O04=A or revised ADR-CG-001 |
 
 ## M0 documentary gate
