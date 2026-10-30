@@ -432,6 +432,12 @@ Before mutation, an instance must reconcile canonical state and acquire the requ
 
 ## 24. Derived orchestration invariants
 
+### Approved cross-skill classification alignment (M04-C01 — option A, 2026-10-30)
+
+SIGA is the **sole canonical continuation classifier**. Its modes are **exactly** `RESUME`, `WATCH`, `ADVANCE`, one per invocation. `BLOCKED` and `HUMAN_GATE` are **auxiliary dispositions/diagnostics**, not fourth or fifth modes. They indicate a blocking cause or an explicit human decision that remains missing; they do **not** create new authorities, override domain owners, clear gates, or permit unsafe advancement.
+
+A portable ORCHESTRATOR may report the selected SIGA mode plus a disposition and evidence, but MUST NOT add another SIGA classifier or interpret `HUMAN_GATE` as approval. The user approved **this alignment only**; §23 topology, the constitution as a whole, other §25 authority/gate changes, and merging PR #18 remain subject to separate review.
+
 - canonical project state is shared across Orchestrator instances;
 - a claim belongs to an execution, not generically to a skill;
 - no hidden chat/session state grants operational authority;
