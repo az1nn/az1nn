@@ -30,15 +30,22 @@ Status: **NOT RUN / IMPLEMENTATION NOT AUTHORIZED**. Documentary review is not r
 - [ ] Spec Kit CLI execution (not run)
 - [ ] Contract validator and tests (not implemented)
 - [x] GitHub check/status availability previously inspected in CG-006; Vercel SUCCESS at prior exact HEAD; **not** GitHub Actions/Spec Kit validation. Re-run after CG-007 documentation commits.
-- [ ] Revised ADR-CG-001 reapproval **pending**; constitutional ratification, if change triggers it, separately required and NOT granted.
+- [x] ADR-CG-001 and ADR-CG-002 published documentarily via PR #21; constitutional ratification, if change triggers it, separately required and NOT granted.
 - [ ] Authorization for M1 (not granted)
 
 ## CG-007 documentary decision review
 - [x] CG-O01=A, CG-O02=A, CG-O03=A, CG-O04=A, CG-O05=A captured as approved **design choices**.
 - [x] ADR-CG-002=A captured as approved **documentary** decision.
 - [x] ADR-CG-001=B revised to propose one integrated SIGA capability; no separately invocable skill.
-- [ ] User approval of revised ADR-CG-001 (not assumed from the revision request).
-- [ ] CG-007 final closure / M1 authorization (not granted).
+- [x] Subsequent conditional authorization to **publish documentary ADR-CG-001** and publication via PR #21; not constitutional ratification.
+- [x] CG-007 documentary disposition recorded. **M1 remains NOT AUTHORIZED.**
 
 ## Definition of done
 M0 means documents are present and can be independently read in a separate draft PR. M0 does not mean the Guardian exists as an active skill or that later milestones passed.
+
+## CG-008 M02/M03 documentary merge gates
+- [ ] Effective diff contains only the eight remaining documentary files (two ADRs already in main).
+- [ ] SIGA-internal documentation under `.github/skills/siga/context-guardian.md`; no executable Guardian skill or canonical `SKILL.md` edit.
+- [ ] Exact-head CI/checks inspected, NOT_RUN distinguished from PASS.
+- [ ] No new gate, M1 implementation, constitutional ratification or Observatory dependency.
+- [ ] Merge only with rechecked expected HEAD and repository gates; no PR #18/#19 merge.
