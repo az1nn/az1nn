@@ -1,6 +1,6 @@
 # Portable Godot Skill Tree
 
-> Status: WORKING DRAFT — under active grilling.
+> Status: WORKING DRAFT — constitutional/skill-contract review required before merge. See [SIGA compatibility audit](./SIGA-COMPATIBILITY-AUDIT.md).
 >
 > Repository location: `/skills/godot/`
 >
@@ -82,11 +82,13 @@ BLOCKED
 HUMAN_GATE
 ```
 
+**Compatibility finding M04-C01:** the five entries above are the **original draft's classification list**, not five approved core SIGA continuation modes. Canonical SIGA recognizes **RESUME, WATCH, ADVANCE** only. The treatment of `BLOCKED` and `HUMAN_GATE` as auxiliary dispositions is **proposed for human review**, and the ORCHESTRATOR draft still lists five classifications. Do not activate or merge this contract as-is. See [M04 audit](./SIGA-COMPATIBILITY-AUDIT.md).
+
 Additional explicit states defined by the constitution include `SPEC_GAP`, `DOMAIN_CONFLICT`, `EXECUTION_LOOP`, `INSUFFICIENT_EVIDENCE`, `CRITICAL_FINDING` and ownership lifecycle states.
 
 ## Orchestration model
 
-`ORCHESTRATOR` is a single authority/protocol, not a singleton process.
+`ORCHESTRATOR` is a single authority/protocol, not a singleton process. This is **proposed in constitution §23** and consistent in intent with SIGA; it is **not** constitutional ratification.
 
 ```text
 ONE ORCHESTRATION PROTOCOL
