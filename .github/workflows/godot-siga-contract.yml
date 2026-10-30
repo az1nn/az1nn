@@ -1,0 +1,29 @@
+name: Godot SIGA classification contract
+
+on:
+  pull_request:
+    paths:
+      - 'skills/godot/**'
+      - '.github/skills/siga/SKILL.md'
+      - '.github/workflows/godot-siga-contract.yml'
+  push:
+    branches:
+      - 'skills/godot-portable-tree'
+      - main
+    paths:
+      - 'skills/godot/**'
+      - '.github/skills/siga/SKILL.md'
+      - '.github/workflows/godot-siga-contract.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  siga-mode-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify SIGA mode/disposition compatibility
+        run: node skills/godot/tests/validate-siga-modes.mjs
