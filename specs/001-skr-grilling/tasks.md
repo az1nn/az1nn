@@ -18,7 +18,7 @@ Status legend: [x] implementation present in proposed branch; [ ] pending verifi
 
 - [x] T10 Implement static contract checks and scenario coverage (FR-03,FR-05,FR-08,FR-10).
 - [x] T11 Add path-scoped GitHub Actions validation workflow.
-- [ ] T12 Confirm CI passes for PR exact HEAD (requires observed job output).
+- [x] T12 Confirm PR exact-head **static contract CI**: [PR workflow 41049499963](https://github.com/az1nn/az1nn/actions/runs/41049499963) and [push workflow 41049490949](https://github.com/az1nn/az1nn/actions/runs/41049490949) succeeded on `6218137c921aa07a3b42af9411819fd19595bc31` (29/29 static checks in prior verified run). Revalidate again after this documentation update; static PASS does not cover T13 behavioral E2E.
 - [ ] T13 Run real SKR + named skill exercise through the connected repository; persist actual outcomes (cannot be asserted by static validator).
   - [x] T13a First live `SKR SIGA` discovery, tree audit and partial negative review persisted in `evidence/skr-siga-2026-10-09.md` (S01 discovery PASS only).
   - [ ] T13b Execute interactive Outro/hybrid, true negative concurrency, decision-ledger roundtrip and resumed-session behavior; full E2E remains NOT_RUN.
