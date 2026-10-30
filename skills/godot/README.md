@@ -1,6 +1,6 @@
 # Portable Godot Skill Tree
 
-> Status: WORKING DRAFT — constitutional/skill-contract review required before merge. See [SIGA compatibility audit](./SIGA-COMPATIBILITY-AUDIT.md).
+> Status: WORKING DRAFT — classification contract aligned under approved M04-C01 option A; other constitutional/behavioral gates still pending before merge. See [SIGA compatibility audit](./SIGA-COMPATIBILITY-AUDIT.md).
 >
 > Repository location: `/skills/godot/`
 >
@@ -72,17 +72,15 @@ VERIFY
 HANDOFF
 ```
 
-Minimum classification states:
+**Exactly three SIGA continuation modes** (M04-C01, user-approved option A):
 
 ```text
 RESUME
 WATCH
 ADVANCE
-BLOCKED
-HUMAN_GATE
 ```
 
-**Compatibility finding M04-C01:** the five entries above are the **original draft's classification list**, not five approved core SIGA continuation modes. Canonical SIGA recognizes **RESUME, WATCH, ADVANCE** only. The treatment of `BLOCKED` and `HUMAN_GATE` as auxiliary dispositions is **proposed for human review**, and the ORCHESTRATOR draft still lists five classifications. Do not activate or merge this contract as-is. See [M04 audit](./SIGA-COMPATIBILITY-AUDIT.md).
+**Auxiliary dispositions, never additional classification modes:** `BLOCKED` (name verified blocking reason) and `HUMAN_GATE` (name exact missing human decision). They can be recorded alongside the selected SIGA mode, not instead of it. Do not auto-approve gates or authorize mutation simply because a disposition is recorded. See [M04 audit](./SIGA-COMPATIBILITY-AUDIT.md).
 
 Additional explicit states defined by the constitution include `SPEC_GAP`, `DOMAIN_CONFLICT`, `EXECUTION_LOOP`, `INSUFFICIENT_EVIDENCE`, `CRITICAL_FINDING` and ownership lifecycle states.
 
