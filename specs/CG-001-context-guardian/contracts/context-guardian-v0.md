@@ -1,6 +1,6 @@
 # Context Guardian — proposed contracts v0 (non-executable)
 
-All field names and examples are **proposal**, not deployed schema. Future implementation must validate contracts with automated fixtures.
+All field names and examples are **proposal**, not deployed schema. Future implementation must validate contracts with automated fixtures. **CG-007:** the contract is a prospective **SIGA-internal** assessment/decision/handoff data shape, not an independent Context Guardian service or callable skill. ADR-CG-001 integration wording remains pending review; ADR-CG-002 is approved **documentally** only.
 
 ## A. Assessment
 
@@ -45,7 +45,7 @@ The values above are **fictional fixture data**, not measurements of any real ch
 Permitted `state`: `PROPOSED`, `APPROVED`, `REJECTED`, `SUPERSEDED`. Human approval evidence must be explicit; unavailability implies `PROPOSED/UNKNOWN`, never `APPROVED`.
 
 ## C. Optional handoff extension
-Do not replace the canonical CAVEMAN HANDOFF v1. Add a separate section or a namespaced `context_guardian` object to an envelope if supported.
+Do not replace the canonical CAVEMAN HANDOFF v1. Add an optional **SIGA-owned** section or a namespaced `context_guardian` object to an envelope if supported. The namespace describes data, **not a second authority, subsystem or skill**.
 
 ```json
 {
@@ -69,3 +69,12 @@ On resume verify repository/ref/HEAD, ownership claims and domain approvals **be
 `signal = {code, severity: INFO|WARNING|CRITICAL, observed_at, source_ref, evidence, suggested_action, blocking: false}`
 
 A `CRITICAL` severity is a UI urgency suggestion and **does not itself constitute** an INSPECTOR `CRITICAL_FINDING` or execution block. Such transitions require independently existing validated criteria and authority.
+
+## CG-007 scope and governance
+- CG-O01=A: decision records belong to the owning project; references can span projects without duplicating private data.
+- CG-O02=A: future assessment at each SIGA invocation and significant handoff; **no continuous native-chat telemetry**.
+- CG-O03=A: Intelligent UI progressive enhancement with complete Markdown fallback.
+- CG-O04=A: signals advisory; existing gates only.
+- CG-O05=A: roadmap remains under existing SKR P0 / SIGA P1 ordering pending reconciliation.
+- ADR-CG-001=B: single-SIGA architecture revision is pending approval; **no independent skill registration or runtime**.
+- ADR-CG-002=A: documentary design approval only; not constitutional ratification or implementation authorization.
