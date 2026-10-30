@@ -1,12 +1,12 @@
 # ADR-CG-001 — Context protection is part of SIGA, not a second skill
 
 Date: 2026-10-29
-Status: **REVISION REQUESTED (CG-007: B) / REVISED DRAFT — NOT RATIFIED**
+Status: **APPROVED FOR DOCUMENTARY MERGE (CONDITIONAL AUTHORIZATION) — NOT CONSTITUTIONALLY RATIFIED**
 
 ## Review history
 - Original M0 proposal: Context Guardian as an advisory capability under SIGA, with no independent orchestration authority.
 - User's CG-007 review: **ADR-CG-001=B** with explicit correction: **"context guardian e siga devem ser um só"**.
-- This revision incorporates the requested design direction. It is **not** acceptance of the revised ADR, a constitutional ratification, runtime integration, or M1 authorization. Preserve the original revision in Git history.
+- This revision incorporates the requested design direction. The user's subsequent conditional instruction authorizes merging the ADRs **only if no conflicts remain**. This allows documentary publication after verification; it **does not** ratify the Constitution, authorize runtime integration, approve M1 or broaden scope to other PR #20 files. Preserve the original revision in Git history.
 
 ## Architectural direction requested
 **SIGA itself** owns context-risk inspection, decision-integrity checks and portable handoff checks within its existing operational flow. "Context Guardian" is a **feature/concern of SIGA**, not a separately invocable skill, parallel agent, standalone orchestrator, independently gated subsystem or separate authority.
@@ -31,9 +31,10 @@ Square brackets identify **internal SIGA checks**, not new states, actors, execu
 - **Rejected:** percentage of actual native ChatGPT context-window occupancy inferred from text length.
 - **Preferred for review:** SIGA-internal capability sharing existing evidence, decision and handoff protocols.
 
-## Pending review
-1. Confirm the revised ADR wording and whether even the documentation should eventually move under SIGA's canonical skill directory (no move in this PR).
-2. Determine whether future edits alter constitutional skill topology or authority; if so, obtain explicit constitutional approval **before** implementation.
-3. Resolve M1-specific behavior separately; this ADR review is not authorization for M1.
+## Publication and remaining gates
+- **Documentary merge condition:** verify no material incompatibility with SIGA canonical authority and no Git merge conflicts; merge only the two ADR files, never all 10 PR #20 files under this authorization.
+- **Constitutional review:** any future change to canonical SIGA execution semantics, topology, authority or new blocking gates requires explicit human ratification before implementation.
+- **Placement:** this ADR is documentary. Any later relocation/integration into canonical SIGA files must undergo separate scoped review; no runtime activation here.
+- **M1:** remains not authorized.
 
 References: SPEC-CG-001; CG-007; PR #18 and PR #19 remain independent draft workstreams; Observatory PR #1 is a PoC only.
