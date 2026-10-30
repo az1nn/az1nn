@@ -1,6 +1,6 @@
 # Context Guardian — proposed contracts v0 (non-executable)
 
-All field names and examples are **proposal**, not deployed schema. Future implementation must validate contracts with automated fixtures. **CG-007:** the contract is a prospective **SIGA-internal** assessment/decision/handoff data shape, not an independent Context Guardian service or callable skill. ADR-CG-001 integration wording remains pending review; ADR-CG-002 is approved **documentally** only.
+All field names and examples are **proposal**, not deployed schema. Future implementation must validate contracts with automated fixtures. **CG-007:** the contract is a prospective **SIGA-internal** assessment/decision/handoff data shape, not an independent Context Guardian service or callable skill. ADR-CG-001 and ADR-CG-002 were published **documentarily** via PR #21; no constitutional ratification or implementation authorization.
 
 ## A. Assessment
 
@@ -76,5 +76,7 @@ A `CRITICAL` severity is a UI urgency suggestion and **does not itself constitut
 - CG-O03=A: Intelligent UI progressive enhancement with complete Markdown fallback.
 - CG-O04=A: signals advisory; existing gates only.
 - CG-O05=A: roadmap remains under existing SKR P0 / SIGA P1 ordering pending reconciliation.
-- ADR-CG-001=B: single-SIGA architecture revision is pending approval; **no independent skill registration or runtime**.
+- ADR-CG-001=B historical revision was followed by conditional documentary merge authorization and publication in PR #21; **no independent skill registration/runtime or constitutional ratification**.
 - ADR-CG-002=A: documentary design approval only; not constitutional ratification or implementation authorization.
+
+Canonical design-document home: `.github/skills/siga/context-guardian.md` (M03=A). Namespaced `context_guardian` fields identify SIGA-owned proposal data, not a second component authority.
