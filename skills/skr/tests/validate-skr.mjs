@@ -83,7 +83,8 @@ check('SIGA verification spec and roadmap traceability', () => {
   for (let i = 1; i <= 9; i++) assert.ok(sigaSpec.includes('FR-' + String(i).padStart(3, '0')));
   for (let i = 1; i <= 9; i++) assert.ok(sigaTasks.includes('ST' + String(i).padStart(2, '0')));
   required(sigaPlan, ['human', 'Spec Kit', 'RESUME', 'WATCH', 'ADVANCE']);
-  required(sigaDecisions, ['SIGA-G1', 'HUMAN_GATE', 'AUTO_RESOLVED']);
+  // The human scope gate SIGA-G1 was decided D on 2026-10-09; don't demand an unresolved gate label.
+  required(sigaDecisions, ['SIGA-G1', 'D APPROVED', 'AUTO_RESOLVED']);
   // G1 was explicitly approved as D; do not reopen the historical HUMAN_GATE.
   required(sigaDecisions, ['SIGA-G1', 'D APPROVED']);
   required(roadmap, ['002-siga-verification/spec.md', 'P1 after SKR P0', 'G1 D APPROVED']);
