@@ -41,11 +41,19 @@ RECONCILE
 -> HANDOFF
 ```
 
-Classification:
+**Continuation classification (exactly one of three canonical SIGA modes):**
 
 ```text
-RESUME | WATCH | ADVANCE | BLOCKED | HUMAN_GATE
+RESUME | WATCH | ADVANCE
 ```
+
+**Auxiliary gate/disposition (not a classification mode):**
+
+```text
+BLOCKED | HUMAN_GATE
+```
+
+Record `BLOCKED` only with a verifiable blocking cause; record `HUMAN_GATE` only with the precise human decision and owner still required. These dispositions never become a fourth/fifth mode, never grant execution permission, and cannot turn a blocked action into `ADVANCE`. Existing SIGA VERIFY-FIRST and human/domain authority remain intact (M04-C01 option A approved).
 
 During RECONCILE also detect:
 
@@ -86,6 +94,7 @@ Claims belong to execution instances, not to the ORCHESTRATOR skill globally.
 
 ## Classification invariants
 
+- A continuation output always carries exactly one of `RESUME`, `WATCH`, `ADVANCE` as its mode, independently of any auxiliary `BLOCKED`/`HUMAN_GATE` disposition;
 - `RESUME` revalidates branch/head, claims, spec, evidence and gates;
 - `WATCH` is non-mutating by default;
 - `ADVANCE` requires eligible work without unresolved dependency/conflict/gate;
