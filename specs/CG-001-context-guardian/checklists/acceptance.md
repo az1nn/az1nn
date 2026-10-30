@@ -19,6 +19,9 @@ Status: **NOT RUN / IMPLEMENTATION NOT AUTHORIZED**. Documentary review is not r
 | CG-T13 | Proposed integration with draft PR #18/#19 | No changes to those PRs or roadmap reordering |
 | CG-T14 | Markdown-only host | All signal/handoff details remain accessible without Intelligent UI |
 | CG-T15 | Scope excludes API/daemon | No fabricated live monitoring, autonomous capture or provider telemetry |
+| CG-T16 | Unified SIGA design | No separately invocable Context Guardian skill/agent/authority; diagnostics are SIGA-internal only |
+| CG-T17 | CG-007 decision integrity | O01–O05 marked approved for documentation; ADR-CG-002 approved documentarily; ADR-CG-001 revised but pending reapproval |
+| CG-T18 | Existing gate preservation | No new blocking authority or constitutional approval implied by CG-O04=A or revised ADR-CG-001 |
 
 ## M0 documentary gate
 - [x] Existing canonical SIGA and PR #18/#19 reviewed from remote sources
@@ -26,9 +29,16 @@ Status: **NOT RUN / IMPLEMENTATION NOT AUTHORIZED**. Documentary review is not r
 - [x] Proposed schemas, governance and evidence taxonomy documented
 - [ ] Spec Kit CLI execution (not run)
 - [ ] Contract validator and tests (not implemented)
-- [ ] GitHub Actions exact-head checks (inspect after PR creation)
-- [ ] Human ratification for constitutional/authority changes (not requested)
+- [x] GitHub check/status availability previously inspected in CG-006; Vercel SUCCESS at prior exact HEAD; **not** GitHub Actions/Spec Kit validation. Re-run after CG-007 documentation commits.
+- [ ] Revised ADR-CG-001 reapproval **pending**; constitutional ratification, if change triggers it, separately required and NOT granted.
 - [ ] Authorization for M1 (not granted)
+
+## CG-007 documentary decision review
+- [x] CG-O01=A, CG-O02=A, CG-O03=A, CG-O04=A, CG-O05=A captured as approved **design choices**.
+- [x] ADR-CG-002=A captured as approved **documentary** decision.
+- [x] ADR-CG-001=B revised to propose one integrated SIGA capability; no separately invocable skill.
+- [ ] User approval of revised ADR-CG-001 (not assumed from the revision request).
+- [ ] CG-007 final closure / M1 authorization (not granted).
 
 ## Definition of done
 M0 means documents are present and can be independently read in a separate draft PR. M0 does not mean the Guardian exists as an active skill or that later milestones passed.
