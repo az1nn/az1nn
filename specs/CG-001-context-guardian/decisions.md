@@ -38,3 +38,25 @@ These are **explicit design/documentation approvals**, **not** authorization to 
 - **CG-007 final closure:** pending review of revised ADR-CG-001 and applicable governance assessment.
 - **M1 and any constitutional change:** require separate explicit authorization.
 - **Roadmap mutation:** not performed; future reconciliation with PR #19 needed.
+
+## CG-008 — Reconciliation and documentary disposition (2026-10-29)
+
+**New user decision:** `M01=A, M02=A, M03=A, M04=A`. Scope: correct PR #19 static CI; reconcile PR #20 and prepare merge of **remaining documentary files**; place SIGA context documentation under canonical SIGA directory; review PR #18 constitution before any merge. **No M1 implementation, automatic constitutional ratification, or Observatory merge.**
+
+| Identifier | Documentary outcome | State / evidence |
+|---|---|---|
+| ADR-CG-001 | Single SIGA authority; Context Guardian as SIGA-internal checks | **Published to main as documentation** via PR #21, commit `4dafe3eca35a0416dc6300e02ac0cfa13e21bacb`. This supersedes the CG-007 **pending publication** status, **not** the distinct constitutional gate. |
+| ADR-CG-002 | Provenance, sample-only measurements, portable handoff | **Published to main as documentation** via PR #21; same commit. |
+| M01=A | Repair SKR validator against explicit G1=D approval | APPROVED correction on PR #19; test result to be checked at new exact HEAD |
+| M02=A | Reconcile M0 documents against merged ADRs; prepare clean merge of remaining docs | APPROVED conditional documentary scope; no activation or M1 |
+| M03=A | Place Context Guardian's design README with canonical SIGA documentation | APPROVED documentary relocation to `.github/skills/siga/context-guardian.md`, not change to `SKILL.md` |
+| M04=A | Audit portable tree constitution and align draft before approval/merge | APPROVED audit, **NOT** constitutional ratification or PR #18 merge |
+
+The original CG-007 rows and unapproved states above are **historical snapshots**, retained for audit. Their current disposition is specified here. The two ADR documents are already in `main` (same blob identities as PR #20).
+
+### Pending, NOT authorized
+- Any runtime/skill routing or execution integration of Guardian into SIGA; M1+.
+- Any constitutional change to decision authority, topology, block/accept/execute rights, or a new mandatory gate.
+- SKR PR #19 merge until exact-head CI plus outstanding behavioral checks and review satisfy gates.
+- Godot PR #18 merge before completed constitutional review and explicit ratification where applicable.
+- Observatory implementation/merge (PoC only).
