@@ -1,8 +1,8 @@
 # ADR-CG-002 — Explicit provenance and portable handoff, no native telemetry assumption
 
 Date: 2026-10-29
-Status: **APPROVED FOR DOCUMENTATION (CG-007: A)**  
-Scope: **Design direction only — NOT implemented; NOT constitutional ratification; NO M1 or merge authorization.**
+Status: **APPROVED FOR DOCUMENTARY MERGE (CG-007: A + CONDITIONAL MERGE AUTHORIZATION)**  
+Scope: **Design direction only — NOT implemented; NOT constitutional ratification; NO M1 authorization. Merge limited to ADRs after conflict verification.**
 
 ## Context
 Native ChatGPT sessions do not expose an API-free, verified measurement of actual context-window occupancy or continuous cross-chat history capture. Relying on heuristic thresholds as utilization creates false confidence. Summaries can omit or distort decisions.
@@ -27,7 +27,7 @@ Native ChatGPT sessions do not expose an API-free, verified measurement of actua
 - Inventing a provider utilization meter.
 - Treating chat memory as source of truth.
 - Making Observatory mandatory.
-- Creating a second Guardian orchestrator/skill; ADR-CG-001 revision remains **pending approval**.
+- Creating a second Guardian orchestrator/skill; ADR-CG-001 revised text is **eligible for documentary merge only under the user's subsequent conditional authorization**, without constitutional ratification.
 
 ## Approval provenance
-User CG-007 selection `ADR-CG-002=A` on 2026-10-29; no constitutional change ratified.
+User CG-007 selection `ADR-CG-002=A` on 2026-10-29, followed by explicit authorization to merge the ADRs only if conflicts no longer exist. This does not ratify constitutional changes or authorize M1.
