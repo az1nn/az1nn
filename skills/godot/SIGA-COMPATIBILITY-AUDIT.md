@@ -16,12 +16,19 @@ Evidence: `skills/godot/CONSTITUTION.md`, `skills/godot/orchestrator/SKILL.md`, 
 | M04-C05 | DEPENDENCY / no conflict | PR #19's explicit G1=D decides ambiguous SIGA scope; does not authorize the Godot tree to create additional SIGA classification modes. | Preserve exact 3 modes and the G1 decision; do not merge PR #19 on static CI alone. |
 | M04-C06 | COMPATIBLE IN INTENT | Context Guardian ADR-CG-001 in main says Guardian is SIGA-internal, not a separate callable skill or orchestrator. | No extra Guardian node/skill in portable tree, Observatory PoC remains independent. |
 
+## M04-C01 — Decision and contract correction (2026-10-30)
+
+- **Human choice:** option **A APPROVED** in chat: exactly three SIGA core modes `RESUME`, `WATCH`, `ADVANCE`; `BLOCKED` and `HUMAN_GATE` are auxiliary dispositions, **not new modes**.
+- **Authority scope:** this ratifies only the *specific classification alignment* and authorizes edits to the PR #18 draft README, ORCHESTRATOR and Constitution §24. It does **not** ratify the Godot constitution as a whole, multi-instance orchestration, topology, other authority changes, or merge permissions.
+- **Contract fix:** README and ORCHESTRATOR now use three-mode classification. Constitution §24 spells out the boundary while preserving the human/domain gates.
+- **State:** M04-C01 is **RESOLVED FOR DOCUMENTARY CONTRACT**. Other gates remain: §25 constitutional review where applicable, exact-head contract/behavioral tests and explicit merge review. The original finding above is retained as historical evidence.
+
 ## Merge gate: NO-GO
 
 A GitHub `mergeable=true` value confirms technical absence of a Git merge conflict only. It is **not** evidence that these constitutional or cross-skill-contract conflicts are resolved.
 
 Before any merge of PR #18:
-1. Resolve **M04-C01** with an explicit decision on the three core SIGA modes vs auxiliary blocked/human-gate dispositions, then update the draft README, ORCHESTRATOR contract, constitution and tests consistently.
+1. **M04-C01 RESOLVED** by user approval of option A; verify the updated README, ORCHESTRATOR, constitution and tests at exact PR HEAD.
 2. Obtain explicit human ratification for any change to authority/topology/blocking and critical cross-skill contracts under §25. **M04=A authorizes audit and documentation alignment only**, not such ratification.
 3. Reconcile against the latest main SHA after PR #20 documentary merge; verify changed paths, domain-owner expectations and exact-head checks.
 4. Validate a portable no-chat continuation test, concurrent ownership/claim test, and reject/insufficient-evidence/human-gate tests. Mark **NOT_RUN** until executed.
