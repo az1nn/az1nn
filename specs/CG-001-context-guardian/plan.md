@@ -3,7 +3,7 @@
 **State:** PLAN PROPOSED / IMPLEMENTATION NOT AUTHORIZED.
 
 ## Unified SIGA topology — CG-007 review
-CG-007 clarifies that Context Guardian is **not** a separate executable skill or orchestrator. All proposed checks belong **inside SIGA**. The standalone documentary directory remains in this draft PR for traceability; no runtime registration or movement of canonical SIGA files is authorized. ADR-CG-001 revision is pending approval.
+CG-007 clarifies that Context Guardian is **not** a separate executable skill or orchestrator. All proposed checks belong **inside SIGA**. The former standalone documentary directory is **retired** in M03=A; documentation now lives at `.github/skills/siga/context-guardian.md`. The canonical `SKILL.md` and all runtime routing remain untouched. ADR-CG-001 was published documentarily via PR #21; constitutional authority and implementation remain unapproved.
 
 ## Data flow
 1. The SIGA invocation enters VERIFY-FIRST and reads available canonical state, an optional prior handoff and only the user-supplied/visible chat segment.
@@ -42,6 +42,9 @@ No continuous or truly proactive listening is available from the proposed native
 - M3 — authorized later: handoff extension and round-trip cross-session tests.
 - M4 — authorized later: integrate internal checks **into canonical SIGA**, with Intelligent UI and Markdown fallback; do not register a separate Guardian skill. Assess constitutional implications before any authority/topology or blocking change.
 - M5 — authorized later: regression/performance/security validations, staging and human acceptance.
+
+## M02/M03 merge reconciliation
+The two ADRs were merged separately through PR #21; this workstream must merge **only the remaining eight documentation files** after exact-head reconciliation. Relocate the proposed README to `.github/skills/siga/context-guardian.md`; do not register a second skill. Prior CG-007 pending-ADR language is preserved only as historical provenance. No reordering of SKR P0 / SIGA P1 is authorized.
 
 ## Existing roadmap conflict
 PR #19 holds a draft `skills/ROADMAP.md` with P0 SKR and P1 SIGA flow verification. **CG-O05=A:** preserve existing P0 SKR and P1 SIGA verification priorities; do not add a second roadmap or reprioritize PR #19 from this PR. Schedule CG-001 only after future roadmap reconciliation.
