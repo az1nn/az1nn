@@ -7,7 +7,10 @@
 - [x] CG-004: Document authority, privacy, concurrency and human gates.
 - [x] CG-005: Define acceptance and negative test scenarios.
 - [x] CG-006: Inspect exact-head GitHub checks/status and record evidence (availability verified, **not** a CI pass).
-- [ ] CG-007: Obtain documentary review and approve next phase explicitly.
+- [ ] CG-007: Final documentary review pending. CG-O01–O05=A and ADR-CG-002=A recorded and approved for documentation; ADR-CG-001=B **revision requested / reapproval pending**. No M1 authorization.
+
+- [x] CG-007a: Persist five approved choices and documentary approval of ADR-CG-002, preserve ADR-CG-001 revision request.
+- [ ] CG-007b: Obtain review/acceptance of revised ADR-CG-001 and any separately required constitutional ratification; no implied approval.
 
 ## M1+ — NOT AUTHORIZED
 - [ ] CG-101: Build deterministic estimator with documented heuristics and coverage markers.
@@ -31,3 +34,10 @@
 - GitHub Actions PR-triggered workflow runs returned **none** at this SHA (NOT_RUN / not evidence of successful validation).
 - Neither status validates Spec Kit, JSON Schema contracts, or runtime behavior. No approval, merge, or M1 authorization follows.
 - Since this record itself changes HEAD, reconcile and re-inspect the **new exact HEAD** after committing. Record its status in the PR discussion without changing HEAD again.
+
+## CG-007 — Review outcome (2026-10-29)
+- Selected: `CG-O01=A`, `CG-O02=A`, `CG-O03=A`, `CG-O04=A`, `CG-O05=A`.
+- `ADR-CG-001=B`: revision requested — 'context guardian e siga devem ser um só'. Revised ADR is **PENDING REAPPROVAL**; SIGA-internal capability only, no separate executable skill.
+- `ADR-CG-002=A`: **APPROVED FOR DOCUMENTARY DESIGN**, without granting M1 or constitutional authority.
+- Protected dependencies: PR #18 and #19 unchanged; Observatory PR #1 PoC only; SKR P0 / SIGA P1 preserved.
+- Final CG-007 closure, M1 activation, merge and constitutional ratification remain pending separate authorizations.
