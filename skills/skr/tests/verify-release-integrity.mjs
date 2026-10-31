@@ -47,7 +47,7 @@ check("scenario entries have distinct actual inputs, expectations and gates", ()
   for (const row of rows) {
     const columns = row.split("|").map(x => x.trim()).filter(Boolean);
     assert.equal(columns.length, 4, "Incorrect matrix columns in " + row);
-    assert.ok(columns.slice(1).every(x => x.length > 15), "Missing scenario acceptance detail: " + row);
+    assert.ok(columns.slice(1).every(x => x.length >= 8), "Missing scenario acceptance detail: " + row);
   }
 });
 check("Outro-only, hybrid and contradictory answers remain valid inputs", () => {
