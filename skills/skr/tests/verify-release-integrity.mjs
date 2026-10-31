@@ -38,11 +38,11 @@ check("SKR is uniquely routed, never another SIGA", () => {
   assert.ok(!file(".github/skills/skr/SKILL.md"));
 });
 check("all sixteen scenario IDs exist once", () => {
-  const ids = Array.from(scenarios.matchAll(/^\\| (S\\d{2}) \\|/gm), m => m[1]);
+  const ids = Array.from(scenarios.matchAll(/^\| (S\d{2}) \|/gm), m => m[1]);
   assert.deepEqual(ids, Array.from({ length: 16 }, (_, i) => "S" + String(i + 1).padStart(2, "0")));
 });
 check("scenario entries have distinct actual inputs, expectations and gates", () => {
-  const rows = scenarios.split("\n").filter(x => /^\\| S\\d{2} \\|/.test(x));
+  const rows = scenarios.split("\n").filter(x => /^\| S\d{2} \|/.test(x));
   assert.equal(rows.length, 16);
   for (const row of rows) {
     const columns = row.split("|").map(x => x.trim()).filter(Boolean);
@@ -94,8 +94,8 @@ check("provenance is not behavioral completion", () => {
   assert.ok(evidenceRecent.includes("GitHub"));
 });
 check("T13 behavioral and T14 review are still explicit gates", () => {
-  assert.match(tasks, /\\[ \\] T13 Run real SKR/);
-  assert.match(tasks, /\\[ \\] T14 Review/);
+  assert.match(tasks, /\[ \] T13 Run real SKR/);
+  assert.match(tasks, /\[ \] T14 Review/);
   assert.ok(scenarios.includes("MANUAL acceptance exercises"));
 });
 check("CG M0 merger is documentation only, not a new skill", () => {
