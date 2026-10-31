@@ -14,6 +14,16 @@ If SIGA identifies a Godot-specific task, load the repository-canonical Godot sp
 
 SIGA keeps ownership of repository truth, continuation classification, validation, merge safety and handoff. GODOT owns the engine-specific reasoning and implementation.
 
+## SKR — focused skill-tree grilling
+
+When the user sends SKR <NOME_DA_SKILL>, load the **single canonical** SKR at:
+
+skills/skr/SKILL.md
+
+Discover the focused skill and its actual tree in the checked-out repository/ref; audit routing, authority, contracts, tests, evidence and handoff. Always use Spec Kit and sync outcomes to the target project's existing roadmap. Include Outro free text and support hybrid choices; batch safe decisions without bypassing genuine human gates.
+
+SKR is a facilitation shortcut, not a second SIGA or an override of specialist authority.
+
 ## GODOT
 
 When the user sends `Godot` or `Godot <subcommand>`, load:
@@ -46,4 +56,4 @@ Use `.github/skills/README.md` for the concise map of canonical and project-loca
 
 Do not copy SIGA or project operational state into ChatGPT memory or treat chat/model memory as persistent state. Reconstruct operational state from the real system and repository artifacts according to the active protocol.
 
-Do not duplicate full skill definitions in this file; keep canonical implementations under `.github/skills/`.
+Do not duplicate full skill definitions in this file. SIGA and engine-specific GODOT are canonical in `.github/skills/`; SKR is canonical in `skills/skr/SKILL.md`.
