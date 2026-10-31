@@ -4,7 +4,7 @@ Created 2026-10-09 after verifying that main did not contain a skills roadmap. T
 
 | Priority | Feature | Spec | State | Dependencies / gate |
 |---|---|---|---|---|
-| P0 | SKR standardized skill grilling and Spec Kit delivery | [001-skr-grilling](../specs/001-skr-grilling/spec.md) | DRAFT PR #19; CI 29/29 static PASS at 6218137 (2026-10-30); connected-GitHub S01/S02 discovery evidence PARTIAL, full interactive/negative E2E NOT_RUN | Complete manual/hybrid/negative checks, real Spec Kit CLI assessment, review and approval |
+| P0 | SKR standardized skill grilling and Spec Kit delivery | [001-skr-grilling](../specs/001-skr-grilling/spec.md) | REOPENED DRAFT PR #19; reconciled with main after CG M0; existing 29/29 static checks plus 12/12 additional release-integrity assertions PASS at f8ffeab (2026-10-31); connected-GitHub discovery PARTIAL; interactive/behavioral E2E NOT_RUN | Complete manual/hybrid/negative checks, real Spec Kit CLI assessment, review and approval |
 | P1 after SKR P0 | SIGA flow verification / multi-workstream targeting | [002-siga-verification](../specs/002-siga-verification/spec.md) | PROPOSED; G1 D APPROVED, implementation and behavioral tests pending | Finish SKR P0, scope arbitration implementation, suite and exact-head tests; no canonical SIGA change yet |
 | Existing separate work (not reprioritized) | Godot portable skill tree | [PR #18](https://github.com/az1nn/az1nn/pull/18) | OPEN DRAFT in separate branch | constitutional gates and scope owned by that PR |
 

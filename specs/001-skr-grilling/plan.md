@@ -50,3 +50,12 @@ Skills roadmap: skills/ROADMAP.md, introduced because no prior skills roadmap wa
 5. During a live SKR <skill> use case, execute runtime conversational audit and attach actual evidence/decision ledger.
 
 No Godot runtime scene/art assets are created or modified by this feature.
+
+## Merge-readiness validation (2026-10-31)
+
+This is a **prompt/skill contract**, not a deployed callable agent service. GitHub Actions validates source and repository-artifact invariants, but cannot in this workflow invoke a ChatGPT-native SKR session, render host UI controls, or observe live decision capture. Do not label the 12 new repository checks as LLM E2E, nor infer official Spec Kit CLI installation from the presence of Markdown documents.
+
+- Deterministic CI: `node skills/skr/tests/validate-skr.mjs` (29 checks) and `node skills/skr/tests/verify-release-integrity.mjs` (12 assertions), both in push and PR workflows. Validate result at **the current HEAD after every edit**.
+- Manual agent/host test: use `skills/skr/tests/manual-acceptance.md` as a controlled test plan; capture actual user/agent responses and sanitized ledger output. Explicitly cover Outro-only, hybrid A+C+Outro, contradictory answers, constitutional gate, resumed session, concurrent claim rejection and responsive UI-host payload.
+- GitHub merge gate: verified HEAD, compare against main, CI complete, human/domain/constitutional approvals where necessary, T13/T17 evidence independently reviewed. Until then keep PR draft and **do not merge**.
+- Keep PR #18 portable Godot constitution independent; canonical SIGA mode contract remains RESUME/WATCH/ADVANCE.

@@ -25,3 +25,12 @@ Status legend: [x] implementation present in proposed branch; [ ] pending verifi
 - [ ] T14 Review/approve PR and merge under repository gates; never assume approval from drafting this spec.
 
 Dependencies: T12 after T10/T11; T13 after routing; T14 after T12/T13 and review policy.
+
+## Reopen/merge-safety workstream (31/10/2026)
+
+- [x] T15 Reopen closed PR #19 without merge; reconcile branch with `main@a1c8582013fab617afee35a18cddff4b70cf3d43` using an explicit two-parent commit, preserving Context Guardian M0 documents.
+- [x] T16 Add `skills/skr/tests/verify-release-integrity.mjs` with **12 deterministic static/repository-artifact checks**; wire into existing `SKR Contract` workflow alongside 29 existing checks. On `f8ffeab37137a6643dc947b957b1187aaac16c49`, push and PR `static-contract` completed **SUCCESS**. These checks are **not agent behavioral E2E**.
+- [ ] T17 Run real SKR agent + human/host interactive E2E (S03/S04/S05/S09/S11/S12/S14/S15/S16); attach session transcript **sanitized**, observable UI input payload, decision ledger roundtrip and independently reviewed output. Not supplied in this workstream; **NOT_RUN**.
+- [ ] T18 Review/approve merged-scope changes, confirm no human gate, then merge PR #19 using SHA lease. **NO MERGE while T13/T17 are unverified**.
+
+See `skills/skr/tests/manual-acceptance.md` for executable human test procedure and `specs/001-skr-grilling/evidence/merge-readiness-2026-10-31.md` for exact evidence status. No canonical SIGA code change, constitutional ratification, new authority, or Context Guardian M1 implementation.
