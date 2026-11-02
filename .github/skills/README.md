@@ -7,6 +7,7 @@ Direct operational map for the Az1nn repositories.
 | Skill | Trigger | What it owns | Use when | Do not use for |
 |---|---|---|---|---|
 | **SIGA** | `Siga` | Verify-first continuation, repository state, RESUME/WATCH/ADVANCE, validation and durable handoff. | You want the project to discover where it really is and continue correctly. | A narrow specialist task when you already know the domain command and do not need top-level continuation. |
+| **SKR** | `SKR <NOME_DA_SKILL>` | Focused skill-tree grilling, hybrid Outro answers, justified decisions in batches, Spec Kit traceability and roadmap linkage. | You want to audit/improve a skill and inspect its full invocation, verification and testing flow. | Silently ratifying constitutional changes, superseding SIGA, or approving subjective domain gates. |
 | **GODOT** | `Godot [command]` | Godot architecture, GDScript, scenes, Resources, renderer, debug, tests, profiling, export and engine learning. | The task is specifically about a Godot project/engine concern. | Narrative canon, art-direction approval or generic repo continuation. |
 
 Canonical paths:
@@ -14,6 +15,7 @@ Canonical paths:
 ```text
 .github/skills/siga/SKILL.md
 .github/skills/godot/SKILL.md
+skills/skr/SKILL.md
 ```
 
 ## Project-local specialists in `az1nn/growing-rio`
@@ -41,6 +43,7 @@ The existing `3JS` skill remains useful for maintained/historical Three.js scope
 
 ```text
 "continue the project"             -> SIGA
+"SKR ART / SKR SIGA"               -> SKR (focused skill-tree audit + grilling)
 "Godot is failing / how build X?"  -> GODOT
 "what is canon / write narrative"  -> LORE
 "what should this scene look like" -> CENA
@@ -71,6 +74,12 @@ SIGA
 -> repository tests / exact-head CI
 -> SIGA merge/handoff
 ```
+
+## Portable tree in progress
+
+The Godot multi-skill tree under skills/godot/ currently lives in [PR #18](https://github.com/az1nn/az1nn/pull/18) and is not assumed to be merged on main. SKR discovers the target tree by exact ref and does not treat pending PR content as installed mainline state.
+
+Skills roadmap: [skills/ROADMAP.md](../../skills/ROADMAP.md) (newly introduced for skills; project-level SKR sessions use their own existing roadmaps).
 
 ## Storage rule
 
