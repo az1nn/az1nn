@@ -38,3 +38,17 @@ Before any merge of PR #18:
 - No invented context-window occupancy, no separate Guardian skill, no Observatory runtime dependency.
 - No merging, M1 implementation, silent constitutional ratification, or autonomous topology alteration in this audit.
 - Preserve draft constitutional text and decision provenance; do not convert documented proposals into approval.
+
+## SIGA — Merge authorization checkpoint (2026-11-03)
+
+**Historical status clarification:** the earlier `MERGE NO-GO` finding and §25 human gate are preserved above as *historical* reviews of a prior draft. The user has now **explicitly authorized the merge of PR #18**. This authorizes **repository incorporation of the working-draft portable skill tree only**, not a blanket constitutional ratification, activation/registration of a new orchestrator, or permission for skills to bypass human/domain gates.
+
+At the authorization boundary:
+- PR #18 was reconciled against `main@50cac374ccf03bd503468019bdd675ae7eede364`, preserving existing SKR and Context Guardian files. The effective PR diff contains only 13 Godot portable-tree/CI files, without changing the canonical `.github/skills/siga/SKILL.md`.
+- The user-approved M04-C01 option A remains: **exactly three SIGA continuation modes** `RESUME`, `WATCH`, `ADVANCE`; `BLOCKED`/`HUMAN_GATE` are advisory/blocked dispositions, not new modes.
+- The Godot constitution remains **WORKING DRAFT**, not fully ratified. Any future changes to operating authority/topology/human-gate rules require separate explicit approval. A published draft must not be treated as a runtime-authorized protocol.
+- The six static mode/authority invariants are covered by `skills/godot/tests/validate-siga-modes.mjs`. A successful GitHub Actions check is **not** proof of end-to-end domain behavior, concurrency/claim isolation, state continuity or human review.
+- There is no proven behavioral E2E for a clean-room no-chat continuation, concurrent claims or REJECT/INSUFFICIENT_EVIDENCE gates. These remain `NOT_RUN` and require future verification.
+- GitHub Issues are disabled in `az1nn/az1nn` as last confirmed on 2026-11-02. Follow-up defects must be recorded in the PR discussion until Issues is enabled; no issue number should be invented.
+
+**Disposition:** subject to GitHub exact-head success and zero merge conflicts, user authorizes merge of this draft as documentary/portable skill source. This is **not** a §25 ratification of the whole constitution or activation of a replacement SIGA. Observatory remains PoC; Context Guardian M1 is excluded.
